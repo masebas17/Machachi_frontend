@@ -31,6 +31,8 @@ data1: any;
 teacher: any;
 Schedule: any;
 principal: any;
+period: string;
+period_parcial_name: string;
 
   constructor( 
     private activateRoute: ActivatedRoute,
@@ -56,7 +58,11 @@ principal: any;
     const filtercourse = this.courses.filter(
       (course) => this.courseId === course.id
     );
-
+    
+    this.period_parcial_name = filtercourse[0].Schedule.period;
+    const currentYear = parseInt(this.period_parcial_name);
+    const nextYear = currentYear + 1;
+    this.period = `${this.period_parcial_name} - ${nextYear}`;
 
     this.students = filtercourse[0].Students
 
@@ -181,7 +187,7 @@ createListado(){
     pdf.add(initialTxtLine3);
 
    
-      const initialTxtLine4 = new Txt(`Periodo: 2023-2024\n\n`)
+    const initialTxtLine4 = new Txt(`Periodo: ${this.period}\n\n`)
       .fontSize(12)
       .bold()
       .end;
