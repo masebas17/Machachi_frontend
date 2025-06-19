@@ -1,15 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
-import { faEdit, faTrash, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faTrash,
+  faPlus,
+  faMinus,
+} from '@fortawesome/free-solid-svg-icons';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ediCourses_quota, editCourses_teacher } from 'src/app/shared/interfaces';
+import {
+  ediCourses_quota,
+  editCourses_teacher,
+} from 'src/app/shared/interfaces';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit-course',
   templateUrl: './edit-course.component.html',
-  styleUrls: ['./edit-course.component.css']
+  styleUrls: ['./edit-course.component.css'],
 })
 export class EditCourseComponent implements OnInit {
   opcionSeleccionada: number = 0;
@@ -23,7 +31,7 @@ export class EditCourseComponent implements OnInit {
   opcion3: number = 0;
   opcion_teacher3: number = 0;
   shedules: any;
-  courses: any;
+
   Schedule_data: any;
   data_courses: any;
   faEdit = faEdit;
@@ -36,6 +44,11 @@ export class EditCourseComponent implements OnInit {
   principalTeacher;
   Teachers;
 
+  opcion_periodo: string = '';
+  opcionHorario: number = 0;
+  schedules: any[] = [];
+  courses: any;
+
   cupo: number;
   courseId: any;
   id_course: any;
@@ -44,137 +57,154 @@ export class EditCourseComponent implements OnInit {
   mostrarBotonPlus: boolean = true;
   mostrarBotonMinus: boolean = false;
 
-  constructor( private _apiService: ApiService,
-    private router: Router) { 
-
+  constructor(private _apiService: ApiService, private router: Router) {
     this.shedules = {};
     this.courses = [];
     this.Teachers = [];
-    }
-
+  }
 
   ngOnInit(): void {
-    this.getShedule()
+    this.getShedule();
   }
-  FormCourse = new FormGroup(
-    {
-      maxStudents: new FormControl('30',[Validators.min(30), Validators.max(50),Validators.maxLength(2)]),
-      Teacher: new FormControl(''),
-      Teacher2: new FormControl(''),
-      Teacher3: new FormControl('')
+  FormCourse = new FormGroup({
+    maxStudents: new FormControl('30', [
+      Validators.min(30),
+      Validators.max(50),
+      Validators.maxLength(2),
+    ]),
+    Teacher: new FormControl(''),
+    Teacher2: new FormControl(''),
+    Teacher3: new FormControl(''),
+  });
+
+  async capturarPeriodo() {
+    const resp = await this._apiService.getschedules_from_year(
+      this.opcion_periodo
+    );
+    this.schedules = resp.data;
+    this.opcionHorario = 0;
+    this.courses = [];
+  }
+
+  async capturarHorario() {
+    if (this.opcionHorario) {
+      const resp = await this._apiService.getCoursesbyid(this.opcionHorario);
+      this.courses = resp.data;
     }
-  )
-
-  capturar(){
-    this.verSeleccion = this.opcionSeleccionada
-    console.log(this.verSeleccion)
-
   }
 
-  capturar_curso(){
-    this.verSeleccion_curso = this.seleccion_curso
-    console.log(this.verSeleccion_curso)
+  capturar() {
+    this.verSeleccion = this.opcionSeleccionada;
+    console.log(this.verSeleccion);
   }
 
-  capturar_teacher(){
-    this.opcion_teacher = this.opcion
-    console.log(this.opcion_teacher)
+  capturar_curso() {
+    this.verSeleccion_curso = this.seleccion_curso;
+    console.log(this.verSeleccion_curso);
   }
 
-  capturar_teacher2(){
-    this.opcion_teacher2 = this.opcion2
-    console.log(this.opcion_teacher2)
-  }
-  capturar_teacher3(){
-    this.opcion_teacher3 = this.opcion3
-    console.log(this.opcion_teacher3)
+  capturar_teacher() {
+    this.opcion_teacher = this.opcion;
+    console.log(this.opcion_teacher);
   }
 
-  async getShedule(){
-    const resp = await this._apiService.getschedules_from_admin()
-    console.log(resp)
-    this.shedules = resp
-    this.Schedule_data = resp.data
+  capturar_teacher2() {
+    this.opcion_teacher2 = this.opcion2;
+    console.log(this.opcion_teacher2);
+  }
+  capturar_teacher3() {
+    this.opcion_teacher3 = this.opcion3;
+    console.log(this.opcion_teacher3);
   }
 
- 
-    async getcourses(){
-      const resp = await this._apiService.getCoursesbyid(this.verSeleccion)
-      this.courses = resp.data
-      this.data_courses = resp
-      console.log(this.data_courses)
-      this.seleccion_curso = 0;
+  async getShedule() {
+    const resp = await this._apiService.getschedules_from_admin();
+    console.log(resp);
+    this.shedules = resp;
+    this.Schedule_data = resp.data;
   }
 
-  
-  async getTeachers(){
-    const resp = await this._apiService.get_Teacher_admin(this.verSeleccion)
+  async getcourses() {
+    const resp = await this._apiService.getCoursesbyid(this.verSeleccion);
+    this.courses = resp.data;
+    this.data_courses = resp;
+    console.log(this.data_courses);
+    this.seleccion_curso = 0;
+  }
+
+  async getTeachers() {
+    const resp = await this._apiService.get_Teacher_admin(this.verSeleccion);
     this.list_teachers = resp.data;
-    console.log(this.list_teachers)
     this.opcion = 0;
   }
 
-  async edit(event: any){
-
-    console.log(event.target.name)
-    this.courseId =  parseInt(event.target.name)
+  async edit(event: any) {
+    this.courseId = parseInt(event.target.name);
 
     const findCourseId = this.courses.find(
-      (course) => course.id  === this.courseId
+      (course) => course.id === this.courseId
     );
 
-    this.id_course = findCourseId.id
-    console.log(this.id_course)
+    this.id_course = findCourseId.id;
+    console.log(this.id_course);
 
-    this.getTeachers()
-
-
+    this.getTeachers();
   }
 
-  async edit_teachers(){
+  async edit_teachers() {
+    if (this.opcion_teacher) {
+      this.data_courses_teacher = {
+        principalId: this.opcion_teacher,
+        teachersId: [
+          this.opcion_teacher,
+          this.opcion_teacher2,
+          this.opcion_teacher3,
+        ],
+      };
 
-    if(this.opcion_teacher){
-    this. data_courses_teacher ={
-      principalId: this.opcion_teacher,
-      scheduleId: this.verSeleccion,
-      teachersId: [this.opcion_teacher,this.opcion_teacher2, this.opcion_teacher3]
+      const resp = await this._apiService.edit_course_teacher(
+        this.id_course,
+        this.data_courses_teacher
+      );
+      console.log(resp);
+
+      this.capturarHorario();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'No esta escogiendo ningun catequista',
+        text: 'Debe seleccionar al menos el Catequista Principal si quiere realizar la acción de asignación',
+      });
     }
-   
-    const resp = await this._apiService.edit_course_teacher(this.id_course, this. data_courses_teacher)
-    console.log(resp)
-
-    this.getcourses()
-  } else{
-    Swal.fire({
-      icon: 'error',
-      title: 'No esta escogiendo ningun catequista',
-      text: 'Debe seleccionar al menos el Catequista Principal si quiere realizar la acción de asignación',
-    })
-  }
   }
 
-  async edit_quota(){
-    this. data_courses_quota ={
+  async edit_quota() {
+    this.data_courses_quota = {
       name: this.courses.name,
       maxStudents: this.FormCourse.get('maxStudents').value,
-    }
-   
-    const resp = await this._apiService.edit_course_quota(this.id_course, this. data_courses_quota)
-    console.log(resp)
+    };
 
-    this.getcourses()
+    const resp = await this._apiService.edit_course_quota(
+      this.id_course,
+      this.data_courses_quota
+    );
+    console.log(resp);
+
+    this.capturarHorario();
   }
 
-  async Quitar_Catequista(){
-    this. data_courses_teacher ={
+  async Quitar_Catequista() {
+    this.data_courses_teacher = {
       principalId: null,
-      scheduleId: this.verSeleccion,
-      teachersId: []
-    }
-    const resp = await this._apiService.edit_course_teacher(this.id_course, this.data_courses_teacher)
-    console.log(resp)
+      teachersId: [],
+    };
+    const resp = await this._apiService.edit_course_teacher(
+      this.id_course,
+      this.data_courses_teacher
+    );
+    console.log(resp);
 
-    this.getcourses()
+    this.capturarHorario();
     this.opcion = 0;
     this.opcion2 = 0;
     this.opcion3 = 0;
@@ -183,19 +213,16 @@ export class EditCourseComponent implements OnInit {
     this.opcion_teacher3 = 0;
   }
 
-
   openselect() {
     this.mostrarBotonPlus = false;
     this.mostrarBotonMinus = true;
-    this.display= 'block';
+    this.display = 'block';
   }
 
   closeselect() {
     this.mostrarBotonPlus = true;
     this.mostrarBotonMinus = false;
-    this.display= 'none';
+    this.display = 'none';
     this.opcion_teacher3 = 0;
   }
-  
-
 }

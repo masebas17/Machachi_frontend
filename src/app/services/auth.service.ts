@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { stringify } from 'querystring';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   token: any = null;
@@ -46,20 +46,18 @@ export class AuthService {
     if (!this.token) {
       this.router.navigate(['/login']);
       return Promise.resolve(false);
-    }else{
-    const role = localStorage.getItem('role');
-    if(role === 'ADMIN'){
-      return Promise.resolve(true);
-    }else{
-      this.router.navigate(['/login']);
-      localStorage.removeItem('role')
-      localStorage.removeItem('jwt')
-      return Promise.resolve(false);
-
-    } 
+    } else {
+      const role = localStorage.getItem('role');
+      if (role === 'ADMIN') {
+        return Promise.resolve(true);
+      } else {
+        this.router.navigate(['/login']);
+        localStorage.removeItem('role');
+        localStorage.removeItem('jwt');
+        return Promise.resolve(false);
+      }
     }
   }
-
 
   async verifyToken_supervisor(): Promise<boolean> {
     this.getToken();
@@ -67,16 +65,16 @@ export class AuthService {
     if (!this.token) {
       this.router.navigate(['/login']);
       return Promise.resolve(false);
-    }else{
-    const role = localStorage.getItem('role');
-    if(role === 'SUPERVISOR'){
-      return Promise.resolve(true);
-    }else{
-      this.router.navigate(['/login']);
-      localStorage.removeItem('role')
-      localStorage.removeItem('jwt')
-      return Promise.resolve(false);
-    } 
+    } else {
+      const role = localStorage.getItem('role');
+      if (role === 'SUPERVISOR') {
+        return Promise.resolve(true);
+      } else {
+        this.router.navigate(['/login']);
+        localStorage.removeItem('role');
+        localStorage.removeItem('jwt');
+        return Promise.resolve(false);
+      }
     }
   }
 
@@ -94,28 +92,22 @@ export class AuthService {
     return response;
   }
 
- 
-
-
   async verifyToken_teacher(): Promise<boolean> {
     this.getToken();
     // Si no existe un token en el storage, se redirecciona al login y se envia como una promesa con un false resolve
     if (!this.token) {
       this.router.navigate(['/teacher-login']);
       return Promise.resolve(false);
-    }else{
-    const role = localStorage.getItem('role');
-    if(role === 'TEACHER'){
-      return Promise.resolve(true);
-    }else{
-      this.router.navigate(['/teacher-login']);
-      localStorage.removeItem('role')
-      localStorage.removeItem('jwt')
-      return Promise.resolve(false);
-    } 
+    } else {
+      const role = localStorage.getItem('role');
+      if (role === 'TEACHER') {
+        return Promise.resolve(true);
+      } else {
+        this.router.navigate(['/teacher-login']);
+        localStorage.removeItem('role');
+        localStorage.removeItem('jwt');
+        return Promise.resolve(false);
+      }
     }
   }
-
-
-  }
-
+}

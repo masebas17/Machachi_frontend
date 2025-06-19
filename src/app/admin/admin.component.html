@@ -1,42 +1,59 @@
-
 <section class="navbar">
   <div class="contenedor">
-      <div class="logo">
-          <a href="/admin">
-          <img
+    <div class="logo">
+      <a href="/admin">
+        <img
           width="200"
           alt="logo parroquia"
-          src="../assets/images/header-component/logo_parroquia.png" class="img-responsive"
-          />
-          </a>
-      </div>
-      <div class="spacer"></div>
-      <div class="letras">
-          <img
-          width="400"
-          alt="letras parroquia"
-          src="../assets/images/header-component/letras_parroquia.png"  class="img-responsive"
-          />
-      </div>
+          src="../assets/images/header-component/logo_parroquia.png"
+          class="img-responsive"
+        />
+      </a>
+    </div>
+    <div class="spacer"></div>
+    <div class="letras">
+      <img
+        width="400"
+        alt="letras parroquia"
+        src="../assets/images/header-component/letras_parroquia.png"
+        class="img-responsive"
+      />
+    </div>
   </div>
 </section>
 <div class="topnav" id="myTopnav">
-    <a href="/admin" class="active"><fa-icon [icon]="faHome"></fa-icon> Inicio</a>
-    <a href="/admin/course"><fa-icon [icon]="faList" ></fa-icon> Listados</a>
-    <a href="/admin/edit-course"><fa-icon [icon]="faSchool"></fa-icon> Cursos</a>
-    <a href="/admin/student"><fa-icon [icon]="faUserPen"></fa-icon> Inscripciones</a>
-    <a href="/admin/edit-student"><fa-icon [icon]="faPenToSquare"></fa-icon> Editar Información</a>
-    <a href="/admin/pay"><fa-icon [icon]="faSackDollar"></fa-icon> Pagos</a>
-    <a href = "/admin/enrollment_admin"><fa-icon [icon]="faBookOpenReader"></fa-icon> Matriculación</a> 
-    <a href="/admin/teacher-management"><fa-icon [icon]="faUsers"></fa-icon> Catequistas</a> 
-    <a href = "/admin/attendance-reports"><fa-icon [icon]="faFilePdf"></fa-icon> Asistencias</a> 
-    <a class=" cerrar-sesion btn btn-danger" (click)="logout()" title="Cerrar sesión"> <fa-icon [icon]="faRightToBracket"></fa-icon></a>
-    <a href="javascript:void(0);" class="icon" (click)="myFunction()">
-      ☰
-    </a>
-</div> 
+  <a href="/admin" class="active"><fa-icon [icon]="faHome"></fa-icon> Inicio</a>
+  <a href="/admin/course"><fa-icon [icon]="faList"></fa-icon> Listados</a>
+  <a href="/admin/edit-course"><fa-icon [icon]="faSchool"></fa-icon> Cursos</a>
+  <a href="/admin/student"
+    ><fa-icon [icon]="faUserPen"></fa-icon> Inscripciones</a
+  >
+  <a href="/admin/edit-student"
+    ><fa-icon [icon]="faPenToSquare"></fa-icon> Editar Información</a
+  >
+  <a href="/admin/pay"><fa-icon [icon]="faSackDollar"></fa-icon> Pagos</a>
+  <a href="/admin/enrollment_admin"
+    ><fa-icon [icon]="faBookOpenReader"></fa-icon> Matriculación</a
+  >
+  <a href="/admin/teacher-management"
+    ><fa-icon [icon]="faUsers"></fa-icon> Catequistas</a
+  >
+  <a href="/admin/attendance-reports"
+    ><fa-icon [icon]="faFilePdf"></fa-icon> Asistencias</a
+  >
+  <a href="/admin/enrollment-report"
+    ><fa-icon [icon]="faFilePdf"></fa-icon> Certificados</a
+  >
+  <a
+    class="cerrar-sesion btn btn-danger"
+    (click)="logout()"
+    title="Cerrar sesión"
+  >
+    <fa-icon [icon]="faRightToBracket"></fa-icon
+  ></a>
+  <a href="javascript:void(0);" class="icon" (click)="myFunction()"> ☰ </a>
+</div>
 
-<div style="padding-bottom:16px">
+<div style="padding-bottom: 16px">
   <router-outlet></router-outlet>
-</div> 
-
+</div>
