@@ -60,7 +60,10 @@ import { TeacherManagementComponent } from './admin/teacher-management/teacher-m
 import { ReportAttendanceComponent } from './teacher-dashboard/report-attendance/report-attendance.component';
 import { AttendanceReportsComponentComponent } from './admin/attendance-reports-component/attendance-reports-component.component';
 import { FilterPipe } from './shared/filter.pipe';
-import { VerifyInformationStudentsComponent } from './StudentsComponents/verify-information-students/verify-information-students.component' ;
+import { VerifyInformationStudentsComponent } from './StudentsComponents/verify-information-students/verify-information-students.component';
+import { EnrollmentListComponent } from './teacher-dashboard/enrollment-list/enrollment-list.component';
+import { EnrollmentReportComponent } from './admin/enrollment-report/enrollment-report.component';
+import { VerifyCertificateComponent } from './verify-certificate/verify-certificate.component' ;
 registerLocaleData(localeEc, 'es-EC');
 
 
@@ -115,7 +118,10 @@ registerLocaleData(localeEc, 'es-EC');
     ReportAttendanceComponent,
     AttendanceReportsComponentComponent,
     FilterPipe,
-    VerifyInformationStudentsComponent
+    VerifyInformationStudentsComponent,
+    EnrollmentListComponent,
+    EnrollmentReportComponent,
+    VerifyCertificateComponent
   ],
   imports: [
     BrowserModule,

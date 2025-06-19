@@ -32,6 +32,7 @@ export class CourseComponentComponent implements OnInit {
   opcionSeleccionada: number = 0;
   opcionSeleccionada_edit: number = 0;
   opcion_periodo: string;
+  opcion_periodo_edit: string = '';
   verSeleccion: number = 0;
   verSeleccion_edit: number = 0;
   seleccion_curso: number = 0;
@@ -109,6 +110,18 @@ export class CourseComponentComponent implements OnInit {
     this.verSeleccion_curso = 0;
   }
 
+  async capturar_periodo_edit() {
+    console.log(this.opcion_periodo_edit);
+    const resp = await this._apiService.getschedules_from_year(
+      this.opcion_periodo_edit
+    );
+    console.log(resp);
+    this.shedules = resp;
+    this.Schedule_data = resp.data;
+    this.opcionSeleccionada_edit = 0;
+    this.seleccion_curso_edit = 0;
+  }
+
   async getShedule() {
     const resp = await this._apiService.getschedules_from_admin();
     console.log(resp);
@@ -167,7 +180,7 @@ export class CourseComponentComponent implements OnInit {
     console.log('filtershedule', filtershedule);
 
     this.classroom = filtercourse[0];
-    this.level = filtershedule[0];
+    this.level = filtercourse[0];
     this.period_parcial_name = filtershedule[0].period;
     const currentYear = parseInt(this.period_parcial_name);
     const nextYear = currentYear + 1;
@@ -196,7 +209,7 @@ export class CourseComponentComponent implements OnInit {
           filtershedule[0].endTime +
           ' )';
         document.getElementById('Text_level').innerHTML =
-          filtershedule[0].Level.name;
+          filtercourse[0].Level.name;
         document.getElementById('Text_course').innerHTML = filtercourse[0].name;
         //  if(this.teachers != null){
         //   document.getElementById('Text_Teacher').innerHTML = (this.teachers.lastName + ' ' + this.teachers.name).toUpperCase()
@@ -362,14 +375,14 @@ export class CourseComponentComponent implements OnInit {
 
       pdf.add(title3Txt);
 
-      const initialTxt = new Txt(`Nivel: ${this.level.Level.name}\n`)
+      const initialTxt = new Txt(`Nivel: ${this.classroom.Level.name}\n`)
         .fontSize(12)
         .bold().end;
 
       pdf.add(initialTxt);
 
       const initialTxtLine2 = new Txt(
-        `Horario: ${this.level.weekDay} (${this.level.startTime} - ${this.level.endTime})\n`
+        `Horario: ${this.classroom.Schedule.weekDay} (${this.classroom.Schedule.startTime} - ${this.classroom.Schedule.endTime})\n`
       )
         .fontSize(12)
         .bold().end;
@@ -555,13 +568,13 @@ export class CourseComponentComponent implements OnInit {
       if (this.teachers.length > 0) {
         this.data1 = [
           this.period,
-          this.level.Level.name,
-          this.level.weekDay +
+          this.classroom.Level.name,
+          this.classroom.Schedule.weekDay +
             ' ' +
             '( ' +
-            this.level.startTime +
+            this.classroom.Schedule.startTime +
             ' - ' +
-            this.level.endTime +
+            this.classroom.Schedule.endTime +
             ' )',
           this.classroom.name,
           `${this.teachers[0].lastName.toUpperCase()} ${this.teachers[0].name.toUpperCase()}`,

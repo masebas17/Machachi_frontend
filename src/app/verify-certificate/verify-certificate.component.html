@@ -1,0 +1,43 @@
+<section class="Formulario">
+  <div class="letras">
+    <div class="text-center">
+      <img
+        class="logo img-fluid"
+        src="./assets/images/header-component/logo_parroquia.png"
+        alt="logo parroquial"
+        width="200"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center mt-5">
+    <p>Verificando certificado...</p>
+  </div>
+
+  <div *ngIf="!loading && valid" class="container mt-5">
+    <div class="alert alert-success">
+      <h3>
+        <fa-icon [icon]="faCheckCircle" class="text-success"></fa-icon>
+        Certificado Válido
+      </h3>
+      <p>
+        En los registros de la Parroquia santiago Apóstol de Machachi, consta
+        que este certificado es válido y pertenece a:
+      </p>
+      <p><strong>Alumno:</strong> {{ certificateData.studentName }}</p>
+      <p><strong>Nivel:</strong> {{ certificateData.level }}</p>
+      <p><strong>Período:</strong> {{ certificateData.period }}</p>
+      <p><strong>Estado:</strong> {{ certificateData.status }}</p>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !valid" class="container mt-5">
+    <div class="alert alert-danger text-center">
+      <h3>
+        <fa-icon [icon]="faTimesCircle" class="text-danger"></fa-icon>
+        Certificado No Válido
+      </h3>
+      <p>El certificado no existe o no es válido.</p>
+    </div>
+  </div>
+</section>

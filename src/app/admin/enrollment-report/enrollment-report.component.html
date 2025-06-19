@@ -1,0 +1,105 @@
+<section class="Formulario">
+  <div class="letras">
+    <h1 class="titulo">Listado de Estado Final por Curso</h1>
+  </div>
+  <br />
+
+  <div class="contenedor">
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="">Escoger el periodo:</label>
+        <select
+          class="form-select"
+          [(ngModel)]="opcion_periodo"
+          (change)="capturarPeriodo()"
+        >
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+        </select>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="">Escoger el horario:</label>
+        <select
+          class="form-select"
+          [(ngModel)]="opcionHorario"
+          (change)="capturarHorario()"
+        >
+          <option selected>-- Escoja un horario --</option>
+          <option *ngFor="let schedule of schedules" [ngValue]="schedule.id">
+            {{
+              schedule.weekDay +
+                " " +
+                schedule.startTime +
+                " a " +
+                schedule.endTime
+            }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-sm-4">
+        <label for="">Escoger el curso:</label>
+        <select
+          class="form-select"
+          [(ngModel)]="opcionCurso"
+          (change)="capturarCurso()"
+        >
+          <option selected>-- Escoja un curso --</option>
+          <option *ngFor="let course of courses" [ngValue]="course.id">
+            {{ "Paralelo " + course.name + " - " + course.Level?.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row mt-4" *ngIf="enrollments.length > 0">
+      <div class="col-sm-9">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead class="table-secondary">
+              <tr>
+                <th>Ord</th>
+                <th>Alumno</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let enrollment of enrollments; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>
+                  {{
+                    enrollment.Student.lastName + " " + enrollment.Student.name
+                      | uppercase
+                  }}
+                </td>
+                <td>
+                  <span
+                    [ngClass]="{
+                      'text-success': enrollment.status === 'Aprobado',
+                      'text-danger': enrollment.status === 'Reprobado',
+                      'text-warning': enrollment.status === 'Matriculado'
+                    }"
+                  >
+                    {{ enrollment.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-3">
+          <button class="btn btn-success" (click)="generateCertificates()">
+            Generar Certificados PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

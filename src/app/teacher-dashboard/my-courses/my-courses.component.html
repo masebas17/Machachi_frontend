@@ -1,36 +1,108 @@
 <section class="Formulario">
-    <div class="letras">
-        <h1 class="titulo">Mis Cursos</h1>
-        <br>
-        <h4 class="subtitulo" *ngIf="name_teacher">{{'Catequista: ' + name_teacher.lastName + ' ' + name_teacher.name}}</h4>
-        <hr>
-    <br>
-    </div>
-    <div class="contenedor">
-        <div class=" cards row">
-            <div class="col-sm-3" *ngFor="let courses of mycourses">
-                <div class="card" style="width: 20rem;">
-                    <img *ngIf="courses.Schedule.Level.name == 'Iniciación'"  src="../assets/images/my-courses-teachers/iniciacion.png" class="card-img-top" alt="...">
-                    <img *ngIf="courses.Schedule.Level.name == 'Reconciliación'"  src="../assets/images/my-courses-teachers/reconciliacion.png"  class="card-img-top" alt="...">
-                    <img *ngIf="courses.Schedule.Level.name == 'Eucaristía'"  src="../assets/images/my-courses-teachers/eucaristia.png" class="card-img-top" alt="...">
-                    <img *ngIf="courses.Schedule.Level.name == 'Año Bíblico'"  src="../assets/images/my-courses-teachers/año_biblico.png"  class="card-img-top" alt="...">
-                    <img *ngIf="courses.Schedule.Level.name == 'R.P.B.'"  src="../assets/images/my-courses-teachers/rpb.png"  class="card-img-top" alt="...">
-                    <img *ngIf="courses.Schedule.Level.name == 'Confirmación'"  src="../assets/images/my-courses-teachers/confirmacion.png" class="card-img-top" alt="...">
-                    <!-- <img *ngIf="courses.Schedule.Level.name == 'Confirmación'"  src="https://cdn.questionpro.com/userimages/site_media/encuestas-para-talleres.png" class="card-img-top" alt="..."> -->
-                    <div class="card-body">
-                      <h5 class="card-title">{{courses.Schedule.Level.name + ' ' + '-' + ' '+ 'Paralelo' + ' ' + courses.name}}</h5>
-                      <p class="card-text">{{courses.Schedule.weekDay + ' ' + '(' + courses.Schedule.startTime + ' ' + '-' + ' '+ courses.Schedule.endTime + ')'}}</p>
-                      <p *ngIf="courses.principalId === name_teacher.id">Catequista 1</p>
-                      <p *ngIf="courses.principalId != name_teacher.id">Catequista 2</p>
-                      <!-- <p class="card-text">{{'Paralelo' + ' ' + courses.name}}</p>  -->
-                      <a class="btn btn-primary" [name]="courses.id" (click)="list_of_course($event)">Listado</a>
-                      <a class="btn btn-success" [name]="courses.id" (click)="attendance($event)" *ngIf="courses.principalId === name_teacher.id"><fa-icon [icon]="faListCheck"></fa-icon> Asistencia</a>
-                    </div>
-                </div>
+  <div class="letras">
+    <h1 class="titulo">Mis Cursos</h1>
+    <br />
+    <h4 class="subtitulo" *ngIf="name_teacher">
+      {{ "Catequista: " + name_teacher.lastName + " " + name_teacher.name }}
+    </h4>
+    <hr />
+    <br />
+  </div>
+  <div class="contenedor">
+    <div class="cards row">
+      <div class="col-sm-3" *ngFor="let courses of mycourses">
+        <div class="card" style="width: 20rem">
+          <img
+            *ngIf="courses.Schedule.Level.name == 'Iniciación'"
+            src="../assets/images/my-courses-teachers/iniciacion.png"
+            class="card-img-top"
+            alt="..."
+          />
+          <img
+            *ngIf="courses.Schedule.Level.name == 'Reconciliación'"
+            src="../assets/images/my-courses-teachers/reconciliacion.png"
+            class="card-img-top"
+            alt="..."
+          />
+          <img
+            *ngIf="courses.Schedule.Level.name == 'Eucaristía'"
+            src="../assets/images/my-courses-teachers/eucaristia.png"
+            class="card-img-top"
+            alt="..."
+          />
+          <img
+            *ngIf="courses.Schedule.Level.name == 'Año Bíblico'"
+            src="../assets/images/my-courses-teachers/año_biblico.png"
+            class="card-img-top"
+            alt="..."
+          />
+          <img
+            *ngIf="courses.Schedule.Level.name == 'R.P.B.'"
+            src="../assets/images/my-courses-teachers/rpb.png"
+            class="card-img-top"
+            alt="..."
+          />
+          <img
+            *ngIf="courses.Schedule.Level.name == 'Confirmación'"
+            src="../assets/images/my-courses-teachers/confirmacion.png"
+            class="card-img-top"
+            alt="..."
+          />
+          <!-- <img *ngIf="courses.Schedule.Level.name == 'Confirmación'"  src="https://cdn.questionpro.com/userimages/site_media/encuestas-para-talleres.png" class="card-img-top" alt="..."> -->
+          <div class="card-body">
+            <h5 class="card-title">
+              {{
+                courses.Schedule.Level.name +
+                  " " +
+                  "-" +
+                  " " +
+                  "Paralelo" +
+                  " " +
+                  courses.name
+              }}
+            </h5>
+            <p class="card-text">
+              {{
+                courses.Schedule.weekDay +
+                  " " +
+                  "(" +
+                  courses.Schedule.startTime +
+                  " " +
+                  "-" +
+                  " " +
+                  courses.Schedule.endTime +
+                  ")"
+              }}
+            </p>
+            <p *ngIf="courses.principalId === name_teacher.id">Catequista 1</p>
+            <p *ngIf="courses.principalId != name_teacher.id">Catequista 2</p>
+            <!-- <p class="card-text">{{'Paralelo' + ' ' + courses.name}}</p>  -->
+            <div class="d-flex gap-2 flex-wrap">
+              <a
+                class="btn btn-primary"
+                [name]="courses.id"
+                (click)="list_of_course($event)"
+                >Listado</a
+              >
+              <a
+                class="btn btn-success"
+                [name]="courses.id"
+                (click)="attendance($event)"
+                *ngIf="courses.principalId === name_teacher.id"
+                ><fa-icon [icon]="faListCheck"></fa-icon> Asistencia</a
+              >
+              <a
+                class="btn btn-danger"
+                [name]="courses.id"
+                (click)="final_report($event)"
+                *ngIf="courses.principalId === name_teacher.id"
+                ><fa-icon [icon]="faListCheck"></fa-icon> reporte final</a
+              >
             </div>
-            <br>
+          </div>
         </div>
-    </div>  
+      </div>
+      <br />
+    </div>
+  </div>
 </section>
-
-

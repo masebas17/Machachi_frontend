@@ -1,178 +1,393 @@
 <section class="Formulario">
-    <div class="letras">
-        <h1 class="titulo">Generación de listas por curso</h1>
+  <div class="letras">
+    <h1 class="titulo">Generación de listas por curso</h1>
+  </div>
+  <br />
+  <div class="contenedor">
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="">Escoger el periodo:</label>
+        <select
+          class="form-select"
+          aria-label="Default select example"
+          name="Level"
+          [(ngModel)]="opcion_periodo"
+          (change)="capturar_periodo()"
+        >
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+        </select>
+      </div>
     </div>
-    <br>
-    <div class="contenedor">
-        <div class="row">
-          <div class="col-sm-4">
-            <label for="">Escoger el periodo:</label>
-            <select class="form-select" aria-label="Default select example" name="Level" [(ngModel)]="opcion_periodo" (change)="capturar_periodo()" >
-                <option value="2022" >2022</option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-            </select>
+    <hr />
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="">Escoger Horario:</label>
+        <select
+          class="form-select"
+          aria-label="Default select example"
+          name="Level"
+          [(ngModel)]="opcionSeleccionada"
+          (change)="capturar()"
+        >
+          <option selected>-- Escoja un Horario --</option>
+          <option *ngFor="let shedule of shedules.data" [ngValue]="shedule.id">
+            {{
+              shedule.weekDay +
+                " " +
+                shedule.startTime +
+                " " +
+                "a" +
+                " " +
+                shedule.endTime
+            }}
+          </option>
+        </select>
+      </div>
+      <div class="col-sm-4">
+        <label for="">Escoger el paralelo:</label>
+        <select
+          class="form-select"
+          aria-label="Default select example"
+          name="course"
+          [(ngModel)]="seleccion_curso"
+          (ngModelChange)="capturar_curso()"
+        >
+          <option selected>-- Escoja un paralelo --</option>
+          <option
+            *ngFor="let course_selection of courses"
+            [ngValue]="course_selection.id"
+          >
+            {{
+              "Paralelo" +
+                " " +
+                course_selection.name +
+                " - " +
+                course_selection.Level.name
+            }}
+          </option>
+        </select>
+      </div>
+      <div class="row">
+        <div class="col-sm-9">
+          <div class="botones">
+            <button class="btn btn-success" (click)="listado()">
+              Generar listado
+            </button>
+            <button class="btn btn-primary" (click)="createListado()">
+              <fa-icon [icon]="faprint"></fa-icon> Imprimir lista
+            </button>
+            <button class="btn btn-outline-success" (click)="Export_to_excel()">
+              <fa-icon [icon]="faDownload"></fa-icon> Exportar a Excel
+            </button>
           </div>
         </div>
-        <hr>
-        <div class="row">
-            <div class="col-sm-4">
-                <label for="">Escoger el Nivel:</label>
-                <select class="form-select" aria-label="Default select example" name="Level" [(ngModel)]="opcionSeleccionada" (change)="capturar()" >
-                  <option selected>-- Escoja un Nivel --</option>
-                    <option *ngFor="let shedule of shedules.data" [ngValue]="shedule.id">{{shedule.Level.name + ' ' + "(" + shedule.weekDay + ' ' + shedule.startTime + ' ' + "a" +' '+ shedule.endTime + ")" }}</option>
-                </select>
-            </div>
-            <div class="col-sm-4">
-                <label for="">Escoger el paralelo:</label>
-                <select class="form-select" aria-label="Default select example" name="course" [(ngModel)]="seleccion_curso"  (ngModelChange)="capturar_curso()">
-                  <option selected>-- Escoja un paralelo --</option>  
-                  <option  *ngFor="let course_selection of courses"  [ngValue]="course_selection.id">{{"Paralelo" + ' ' + course_selection.name}}</option>
-                </select>
-            </div>
-            <div class="row">
-            <div class="col-sm-9">
-                <div class="botones">
-                <button class="btn btn-success" (click)="listado()">Generar listado</button> 
-                <button class="btn btn-primary" (click)="createListado()"><fa-icon [icon]="faprint" ></fa-icon> Imprimir lista</button>
-                <button class="btn btn-outline-success" (click)="Export_to_excel()"><fa-icon [icon]="faDownload" ></fa-icon> Exportar a Excel</button>          
-            </div>
-            </div>
-        </div>
-        </div>
-</div> 
-<div class="contenedor-table">
-<div class="container mt-3" id="lista_del_curso">
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover">
-      <thead class="table-secondary">
-        <tr class = "text-center">
-          <th>Nivel</th>
-          <th>Horario</th>
-          <th>Paralelo</th>
-          <th>Catequista(s)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class = "text-center">
-          <td class="text-danger" id="Text_level"></td>
-          <td id = "Text_Schedule"></td>
-          <td id="Text_course"></td>
-          <td>
-            <ul style="padding: 0; margin: 0;">
-              <li *ngFor="let teachers of teachers" style="list-style: none;">{{teachers.lastName + ' ' + teachers.name + '  ' | uppercase}}</li>
-            </ul> 
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      </div>
+    </div>
   </div>
-  <div class="table-responsive">    
-    <table class="table table-bordered table-hover">
-      <thead class="table-secondary">
-        <tr class = "text-center">
-          <th scope="col">Ord</th>
-          <th id="num_cedula">Cédula</th>
-          <th>Apellidos</th>
-          <th>Nombres</th>
-          <th>Edad</th>
-          <th>Discapacidad</th>
-          <th>Aprobado</th>
-          <th>N° de Recibo</th>
-          <!-- <th id="status">Status</th> -->
-          <th id="actions">Recibo</th>
-          <th id="actions">Curso</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let student of students; let item = index">
-          <td scope="row" class = "text-center">{{item+1}}</td>
-          <td class = "text-center" id="num_cedula">{{student.identityNumber}}</td>
-          <td>{{student.lastName | uppercase}}</td>
-          <td>{{student.name | uppercase}}</td>
-          <td class = "text-center">{{student.age}}</td>
-          <td class = "text-center">{{student.disability | siNo}}</td>
-          <td class = "text-center">{{student.aproved | baptized}}</td>
-          <!-- <td class = "text-center">{{student.phone1}}</td> -->
-          <td class = "text-center">{{student.payment}}</td>
-          <!-- <td class="text-center" id="status">{{student.payment | asignated}} </td> -->
-          <td class="text-center" id="btn-edit-voucher" *ngIf="student.payment != null"><button type="button" class="btn btn-warning actions" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" [name]="student.id" (click)="edit($event)">Editar recibo</button></td>
-          <td class="text-center" id="btn-creater-voucher"*ngIf="student.payment == null"><button type="button" class=" actions btn btn-primary " type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" [name]="student.id" (click)="edit($event)">Registrar</button></td>
-          <td class="text-center"><button type="button" class=" actions btn btn-primary " type="button" data-bs-toggle="modal" data-bs-target="#modalCambioCurso" [name]="student.id" (click)="getShedule_edit($event)">Cambiar curso</button></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="contenedor-table">
+    <div class="container mt-3" id="lista_del_curso">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-secondary">
+            <tr class="text-center">
+              <th>Nivel</th>
+              <th>Horario</th>
+              <th>Paralelo</th>
+              <th>Catequista(s)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="text-center">
+              <td class="text-danger" id="Text_level"></td>
+              <td id="Text_Schedule"></td>
+              <td id="Text_course"></td>
+              <td>
+                <ul style="padding: 0; margin: 0">
+                  <li
+                    *ngFor="let teachers of teachers"
+                    style="list-style: none"
+                  >
+                    {{
+                      teachers.lastName + " " + teachers.name + "  " | uppercase
+                    }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-secondary">
+            <tr class="text-center">
+              <th scope="col">Ord</th>
+              <th id="num_cedula">Cédula</th>
+              <th>Apellidos</th>
+              <th>Nombres</th>
+              <th>Edad</th>
+              <th>Discapacidad</th>
+              <th>Aprobado</th>
+              <th>N° de Recibo</th>
+              <!-- <th id="status">Status</th> -->
+              <th id="actions">Recibo</th>
+              <th id="actions">Curso</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of students; let item = index">
+              <td scope="row" class="text-center">{{ item + 1 }}</td>
+              <td class="text-center" id="num_cedula">
+                {{ student.identityNumber }}
+              </td>
+              <td>{{ student.lastName | uppercase }}</td>
+              <td>{{ student.name | uppercase }}</td>
+              <td class="text-center">{{ student.age }}</td>
+              <td class="text-center">{{ student.disability | siNo }}</td>
+              <td class="text-center">{{ student.aproved | baptized }}</td>
+              <!-- <td class = "text-center">{{student.phone1}}</td> -->
+              <td class="text-center">{{ student.payment }}</td>
+              <!-- <td class="text-center" id="status">{{student.payment | asignated}} </td> -->
+              <td
+                class="text-center"
+                id="btn-edit-voucher"
+                *ngIf="student.payment != null"
+              >
+                <button
+                  type="button"
+                  class="btn btn-warning actions"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  [name]="student.id"
+                  (click)="edit($event)"
+                >
+                  Editar recibo
+                </button>
+              </td>
+              <td
+                class="text-center"
+                id="btn-creater-voucher"
+                *ngIf="student.payment == null"
+              >
+                <button
+                  type="button"
+                  class="actions btn btn-primary"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  [name]="student.id"
+                  (click)="edit($event)"
+                >
+                  Registrar
+                </button>
+              </td>
+              <td class="text-center">
+                <button
+                  type="button"
+                  class="actions btn btn-primary"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalCambioCurso"
+                  [name]="student.id"
+                  (click)="getShedule_edit($event)"
+                >
+                  Cambiar curso
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</div> 
-</div>   
 </section>
 
 <!-- modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Registro de Recibo de pago</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="reset_form()"></button>
+        <h5 class="modal-title" id="exampleModalLabel">
+          Registro de Recibo de pago
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="reset_form()"
+        ></button>
       </div>
       <div class="modal-body">
-          <form [formGroup]="Formpay"> 
+        <form [formGroup]="Formpay">
           <div class="row">
-              <div class="col-sm-12">
-                  <input type="text" class="form-control" formControlName="pay" placeholder="Ingrese el número de recibo" name="" [ngClass]="{'is-invalid':Formpay.get('pay')?.errors && Formpay.get('pay')?.touched}">
-                  <div *ngIf="Formpay.get('pay')?.errors">
-                  <div class="text-danger" *ngIf="Formpay.get('pay')?.hasError('required') && Formpay.get('pay')?.touched">Se requiere el ingreso de los nombres</div>
+            <div class="col-sm-12">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="pay"
+                placeholder="Ingrese el número de recibo"
+                name=""
+                [ngClass]="{
+                  'is-invalid':
+                    Formpay.get('pay')?.errors && Formpay.get('pay')?.touched
+                }"
+              />
+              <div *ngIf="Formpay.get('pay')?.errors">
+                <div
+                  class="text-danger"
+                  *ngIf="
+                    Formpay.get('pay')?.hasError('required') &&
+                    Formpay.get('pay')?.touched
+                  "
+                >
+                  Se requiere el ingreso de los nombres
+                </div>
               </div>
-              </div>
+            </div>
           </div>
-          <br>
+          <br />
           <div class="row">
-              <div class="col-sm-6">
-                  <button type="submit" button [disabled]="Formpay.invalid" class="btn btn-success" data-bs-dismiss="modal" (click)="registrar_recibo()">Guardar</button>
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="reset_form()">Cancelar</button>
-              </div>
+            <div class="col-sm-6">
+              <button
+                type="submit"
+                button
+                [disabled]="Formpay.invalid"
+                class="btn btn-success"
+                data-bs-dismiss="modal"
+                (click)="registrar_recibo()"
+              >
+                Guardar
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                data-bs-dismiss="modal"
+                (click)="reset_form()"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
-          </form>
+        </form>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="modalCambioCurso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div
+  class="modal fade"
+  id="modalCambioCurso"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Cambio de curso - periodo 2023</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+        <h5 class="modal-title" id="exampleModalLabel">Cambio de curso</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-6">
-              <!-- <label for="">Escoger el nuevo Nivel:</label> -->
-              <select class="form-select" aria-label="Default select example" name="Level_edit" [(ngModel)]="opcionSeleccionada_edit" (change)="capturar_edit()">
-                  <option selected>-- Escoja un Nivel --</option>
-                  <option *ngFor="let shedule of shedules.data" [ngValue]="shedule.id">{{shedule.Level.name + ' ' + "(" + shedule.weekDay + ' ' + shedule.startTime + ' ' + "a" +' '+ shedule.endTime + ")" }}</option>
-              </select>
-          </div>
-          <div class="col-sm-6">
-              <!-- <label for="">Escoger el nuevo curso:</label> -->
-              <select class="form-select" aria-label="Default select example" name="course_edit" [(ngModel)]="seleccion_curso_edit"  (ngModelChange)="capturar_curso_edit()">
-                  <option selected>-- Escoja un Curso --</option>
-                  <ng-container *ngFor="let course_selection of courses">
-                  <option [ngValue]="course_selection.id">{{"Paralelo" + ' ' + course_selection.name}}</option>
-                  </ng-container>
-              </select>
+        <div class="row mb-3">
+          <div class="col-sm-12">
+            <label for="">Escoger el periodo:</label>
+            <select
+              class="form-select"
+              [(ngModel)]="opcion_periodo_edit"
+              (change)="capturar_periodo_edit()"
+            >
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+            </select>
           </div>
         </div>
-          <br>
-          <div class="row">
-              <div class="col-sm-6">
-                  <button type="submit" class="btn btn-success" data-bs-dismiss="modal" (click)="edit_course()">Guardar</button>
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="reset_courses()" >Cancelar</button>
-              </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-12">
+            <label for="">Escoger Horario:</label>
+            <select
+              class="form-select"
+              [(ngModel)]="opcionSeleccionada_edit"
+              (change)="capturar_edit()"
+            >
+              <option selected>-- Escoja un Horario --</option>
+              <option
+                *ngFor="let shedule of shedules.data"
+                [ngValue]="shedule.id"
+              >
+                {{
+                  shedule.weekDay +
+                    " " +
+                    shedule.startTime +
+                    " a " +
+                    shedule.endTime
+                }}
+              </option>
+            </select>
           </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-sm-12">
+            <label for="">Escoger el paralelo:</label>
+            <select
+              class="form-select"
+              [(ngModel)]="seleccion_curso_edit"
+              (ngModelChange)="capturar_curso_edit()"
+            >
+              <option selected>-- Escoja un paralelo --</option>
+              <option
+                *ngFor="let course_selection of courses"
+                [ngValue]="course_selection.id"
+              >
+                {{
+                  "Paralelo " +
+                    course_selection.name +
+                    " - " +
+                    course_selection.Level.name
+                }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <button
+              type="submit"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+              (click)="edit_course()"
+            >
+              Guardar
+            </button>
+            <button
+              type="button"
+              class="btn btn-danger"
+              data-bs-dismiss="modal"
+              (click)="reset_courses()"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-

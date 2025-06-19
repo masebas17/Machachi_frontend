@@ -1,59 +1,113 @@
 <section class="Formulario">
-    <div class="letras">
-        <h1 class="titulo">Edición de Datos por Curso</h1>
+  <div class="letras">
+    <h1 class="titulo">Edición de Datos por Curso</h1>
+  </div>
+  <br />
+  <div class="contenedor">
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="">Escoger el Periodo:</label>
+        <select
+          class="form-select"
+          [(ngModel)]="opcion_periodo"
+          (change)="capturarPeriodo()"
+        >
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+        </select>
+      </div>
     </div>
-    <br>
-    <div class="contenedor">
-        <div class="row">
-            <div class="col-sm-4">
-                <label for="">Escoger el Nivel:</label>
-                <select class="form-select" aria-label="Default select example" name="Level" [(ngModel)]="opcionSeleccionada" (change)="capturar()" >
-                    <option *ngFor="let shedule of shedules.data"  [ngValue]="shedule.id">{{shedule.Level.name + ' ' + "(" + shedule.weekDay + ' ' + shedule.startTime + ' ' + "a" +' '+ shedule.endTime + ")" }}</option>
-                </select>
-            </div>
-            <div class="col-sm-4">
-                <div class="botones">
-                <button class="btn btn-success" (click)="getcourses()">Consultar paralelos</button>      
-            </div>
-        </div>
-        </div>
-</div> 
-<div class="contenedor-table">
-  <div class="table-responsive">    
-    <table class="table table-bordered">
-      <thead class="table-secondary" id="miTablaPersonalizada">
-        <tr class = "text-center">
-          <!-- <th scope="col">Ord</th> -->
-          <th id="num_cedula">Nombre del Curso</th>
-          <!-- <th>Catequista Principal</th> -->
-          <th>Catequistas Asignados</th>
-          <th id="actions">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let course of courses; let item = index">
-          <!-- <td scope="row" class = "text-center">{{item+1}}</td> -->
-          <td class = "text-center" id="num_cedula">{{'PARALELO' + ' ' + course.name}}</td>
-          <td *ngIf="course.principalId == null" class="text-center">No Asignados</td>
-          <td *ngIf="course.principalId != null " class="text-center">
-            <div>
-              <th>Titular</th>
-              <p>{{course.Teachers[0].lastName + ' ' + course.Teachers[0].name | uppercase}}</p> 
-            </div>
-            <div>
-              <th>Auxiliar o Auxiliares</th>
+
+    <hr />
+
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="">Escoger el Horario:</label>
+        <select
+          class="form-select"
+          [(ngModel)]="opcionHorario"
+          (change)="capturarHorario()"
+        >
+          <option selected>-- Escoja un Horario --</option>
+          <option *ngFor="let shedule of schedules" [ngValue]="shedule.id">
+            {{
+              " (" +
+                shedule.weekDay +
+                " " +
+                shedule.startTime +
+                " a " +
+                shedule.endTime +
+                ")"
+            }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="contenedor-table">
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="table-secondary" id="miTablaPersonalizada">
+          <tr class="text-center">
+            <!-- <th scope="col">Ord</th> -->
+            <th id="num_cedula">Nombre del Curso</th>
+            <!-- <th>Catequista Principal</th> -->
+            <th>Catequistas Asignados</th>
+            <th id="actions">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let course of courses; let item = index">
+            <!-- <td scope="row" class = "text-center">{{item+1}}</td> -->
+            <td class="text-center" id="num_cedula">
+              {{
+                "PARALELO" +
+                  " " +
+                  course.name +
+                  " " +
+                  course.Level.name.toUpperCase()
+              }}
+            </td>
+            <td *ngIf="course.principalId == null" class="text-center">
+              No Asignados
+            </td>
+            <td *ngIf="course.principalId != null" class="text-center">
+              <div>
+                <th>Titular</th>
+                <p>
+                  {{
+                    course.Teachers[0].lastName + " " + course.Teachers[0].name
+                      | uppercase
+                  }}
+                </p>
+              </div>
+              <div>
+                <th>Auxiliar o Auxiliares</th>
                 <!-- <ul style="padding: 0; margin: 0;">
               <ng-container *ngFor="let teacher of course.Teachers.slice(1)">
                 <li style="list-style: none;">{{ teacher.lastName + ' ' + teacher.name | uppercase }}</li>
               </ng-container> 
              </ul>-->
-             <ul style=" padding: 0; margin: 0;">
-              <li *ngIf="course.Teachers[1]" style="list-style: none;">{{course.Teachers[1].lastName + ' ' + course.Teachers[1].name | uppercase}}</li>
-              <li *ngIf="course.Teachers[2]" style="list-style: none;">{{course.Teachers[2].lastName + ' ' + course.Teachers[2].name | uppercase}}</li>
-             </ul> 
-            </div>
-          </td> 
-           <!-- <td *ngIf="course.principalId == null" class="text-center">No Asignados</td>
+                <ul style="padding: 0; margin: 0">
+                  <li *ngIf="course.Teachers[1]" style="list-style: none">
+                    {{
+                      course.Teachers[1].lastName +
+                        " " +
+                        course.Teachers[1].name | uppercase
+                    }}
+                  </li>
+                  <li *ngIf="course.Teachers[2]" style="list-style: none">
+                    {{
+                      course.Teachers[2].lastName +
+                        " " +
+                        course.Teachers[2].name | uppercase
+                    }}
+                  </li>
+                </ul>
+              </div>
+            </td>
+            <!-- <td *ngIf="course.principalId == null" class="text-center">No Asignados</td>
             <td  *ngIf="course.principalId != null" class="text-center">
               <ul style=" padding: 0; margin: 0;">
                <li style="list-style: none;">{{course.Teachers[0].lastName + ' ' + course.Teachers[0].name | uppercase}}</li>
@@ -61,72 +115,164 @@
                <li *ngIf="course.Teachers[2]" style="list-style: none;">{{course.Teachers[2].lastName + ' ' + course.Teachers[2].name | uppercase}}</li>
               </ul> 
             </td>  -->
-          
-          <td class = "text-center">
-              <button type="button" class="btn btn-primary actions" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" [name]="course.id" (click)="edit($event)" > <fa-icon [icon]="faEdit"></fa-icon> Editar datos del curso</button>  
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+            <td class="text-center">
+              <button
+                type="button"
+                class="btn btn-primary actions"
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                [name]="course.id"
+                (click)="edit($event)"
+              >
+                <fa-icon [icon]="faEdit"></fa-icon> Editar datos del curso
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>  
 </section>
 
-
 <!-- modal -->
-<div class="modal fade" id="exampleModal"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edición de Datos de Curso</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="FormCourse">
-            <div class="row">
-                <label for="">Cupo de Estudiantes </label>
-                <div class="col-sm-4">
-                    <input  type="number" class="form-control" formControlName="maxStudents" onKeyDown="if(this.value.length==2) return false;"  value="30"  min="30" max="50" maxlength="2" >
-                </div>
-                <div class="col-sm-6">
-                  <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="edit_quota()">Editar Cupo</button>
-                </div>
+<div
+  class="modal fade"
+  id="exampleModal"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Edición de Datos de Curso
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="FormCourse">
+          <div class="row">
+            <label for="">Cupo de Estudiantes </label>
+            <div class="col-sm-4">
+              <input
+                type="number"
+                class="form-control"
+                formControlName="maxStudents"
+                onKeyDown="if(this.value.length==2) return false;"
+                value="30"
+                min="30"
+                max="50"
+                maxlength="2"
+              />
             </div>
-            <br>
-            <div class="row">
-                <div class="col-sm-12">
-                    <label for="">Asignar el Catequista Principal</label>
-                    <select class="form-select" aria-label="Default select example" formControlName="Teacher" id="Teacher-Select" [(ngModel)]="opcion" (change)="capturar_teacher()" >
-                        <option selected>Escoja un Catequista</option>
-                        <option *ngFor="let teachers of list_teachers"  [ngValue]="teachers.id">{{teachers.lastName + ' ' + teachers.name | uppercase}}</option>
-                    </select>
-                </div>
+            <div class="col-sm-6">
+              <button
+                type="button"
+                class="btn btn-success"
+                data-bs-dismiss="modal"
+                (click)="edit_quota()"
+              >
+                Editar Cupo
+              </button>
             </div>
-            <br>
-            <div class="row">
-              <div class="col-sm-9">
-                  <label for="">Asignar Catequesita Auxiliar</label>
-                  <select class="form-select" aria-label="Default select example" formControlName="Teacher2" id="Teacher-Select" [(ngModel)]="opcion2" (change)="capturar_teacher2()" >
-                      <option selected>Escoja un Catequista</option>
-                      <option *ngFor="let teachers of list_teachers"  [ngValue]="teachers.id">{{teachers.lastName + ' ' + teachers.name | uppercase}}</option>
-                  </select>
-              </div>
-              <div class="col-sm-3">
-                <br>
-                <button type="button" class="btn btn-primary"  type="button" *ngIf="mostrarBotonPlus" (click)="openselect()" ><fa-icon [icon]="faPlus"></fa-icon> </button>
-                <button type="button" class="btn btn-danger"  type="button" *ngIf="mostrarBotonMinus" (click)="closeselect()" ><fa-icon [icon]="faMinus"></fa-icon> </button>
-              </div>
           </div>
-          <br>
-          <div class="row"  [ngStyle]="{'display':display}">
-            <div class="col-sm-12" >
-                <label for="">Asignar otro Auxiliar</label>
-                <select class="form-select" aria-label="Default select example" formControlName="Teacher3" id="Teacher-Select" [(ngModel)]="opcion3" (change)="capturar_teacher3()" >
-                    <option selected>Escoja un Catequista</option>
-                    <option *ngFor="let teachers of list_teachers"  [ngValue]="teachers.id">{{teachers.lastName + ' ' + teachers.name | uppercase}}</option>
-                </select>
+          <br />
+          <div class="row">
+            <div class="col-sm-12">
+              <label for="">Asignar el Catequista Principal</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                formControlName="Teacher"
+                id="Teacher-Select"
+                [(ngModel)]="opcion"
+                (change)="capturar_teacher()"
+              >
+                <option selected>Escoja un Catequista</option>
+                <option
+                  *ngFor="let teachers of list_teachers"
+                  [ngValue]="teachers.id"
+                >
+                  {{ teachers.lastName + " " + teachers.name | uppercase }}
+                </option>
+              </select>
             </div>
-        </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-sm-9">
+              <label for="">Asignar Catequesita Auxiliar</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                formControlName="Teacher2"
+                id="Teacher-Select"
+                [(ngModel)]="opcion2"
+                (change)="capturar_teacher2()"
+              >
+                <option selected>Escoja un Catequista</option>
+                <option
+                  *ngFor="let teachers of list_teachers"
+                  [ngValue]="teachers.id"
+                >
+                  {{ teachers.lastName + " " + teachers.name | uppercase }}
+                </option>
+              </select>
+            </div>
+            <div class="col-sm-3">
+              <br />
+              <button
+                type="button"
+                class="btn btn-primary"
+                type="button"
+                *ngIf="mostrarBotonPlus"
+                (click)="openselect()"
+              >
+                <fa-icon [icon]="faPlus"></fa-icon>
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                type="button"
+                *ngIf="mostrarBotonMinus"
+                (click)="closeselect()"
+              >
+                <fa-icon [icon]="faMinus"></fa-icon>
+              </button>
+            </div>
+          </div>
+          <br />
+          <div class="row" [ngStyle]="{ display: display }">
+            <div class="col-sm-12">
+              <label for="">Asignar otro Auxiliar</label>
+              <select
+                class="form-select"
+                aria-label="Default select example"
+                formControlName="Teacher3"
+                id="Teacher-Select"
+                [(ngModel)]="opcion3"
+                (change)="capturar_teacher3()"
+              >
+                <option selected>Escoja un Catequista</option>
+                <option
+                  *ngFor="let teachers of list_teachers"
+                  [ngValue]="teachers.id"
+                >
+                  {{ teachers.lastName + " " + teachers.name | uppercase }}
+                </option>
+              </select>
+            </div>
+          </div>
           <!-- <div class="row">
             <div class="col-sm-6">
             <button type="button" class="btn btn-primary"  type="button" (click)="openselect()" > Agregar Catequista </button>
@@ -135,17 +281,37 @@
               <button type="button" class="btn btn-danger"  type="button" (click)="closeselect()" > Eliminar Opción </button>
               </div>
           </div> -->
-            <hr>
-            <div class="row">
-              <div class="col-sm-12">
-                <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="edit_teachers()">Asignar </button>
-                <button type="button" class="btn btn-warning" data-bs-dismiss="modal" type="button" (click)="Quitar_Catequista()" ><fa-icon [icon]="faTrash"></fa-icon> Quitar Catequistas</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-              </div>
+          <hr />
+          <div class="row">
+            <div class="col-sm-12">
+              <button
+                type="button"
+                class="btn btn-success"
+                data-bs-dismiss="modal"
+                (click)="edit_teachers()"
+              >
+                Asignar
+              </button>
+              <button
+                type="button"
+                class="btn btn-warning"
+                data-bs-dismiss="modal"
+                type="button"
+                (click)="Quitar_Catequista()"
+              >
+                <fa-icon [icon]="faTrash"></fa-icon> Quitar Catequistas
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
+    </div>
   </div>
 </div>
-  

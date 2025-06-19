@@ -47,67 +47,118 @@ import { TeacherManagementComponent } from './admin/teacher-management/teacher-m
 import { ReportAttendanceComponent } from './teacher-dashboard/report-attendance/report-attendance.component';
 import { AttendanceReportsComponentComponent } from './admin/attendance-reports-component/attendance-reports-component.component';
 import { VerifyInformationStudentsComponent } from './StudentsComponents/verify-information-students/verify-information-students.component';
+import { EnrollmentListComponent } from './teacher-dashboard/enrollment-list/enrollment-list.component';
+import { EnrollmentReportComponent } from './admin/enrollment-report/enrollment-report.component';
+import { VerifyCertificateComponent } from './verify-certificate/verify-certificate.component';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'home',             component: MainMenuComponent },
-    { path: 'searcher',         component: SearcherComponent },
-    { path: 'student/:identityNumber', component: VerifyInformationStudentsComponent },
-    { path: 'shedule_selection', component: ScheduleSelectionComponent },
-    { path: 'course_selection/:id',canActivate: [CourseSelectionGuard] ,component: CourseSelectionComponent },
-    { path: 'enrollment/:id',canActivate: [EnrollmentGuard],component: EnrollmentFormComponent },
-    { path: 'level-form-selection',component: LevelFormSelectionComponent },
-    { path: 'classroom_selection/:id/:identityNumber',canActivate: [CourseSelectionGuard],component:ClassroomSelectionComponent},
-    { path: 'verify_information/:id/:identityNumber', canActivate:[EnrollmentGuard], component:VerifyInformationComponent},
-    { path:'registration-form', component:RegistrationFormComponent},
-    { path: 'voucher',       component: VoucherComponentComponent },
-    {path: 'login', component:LoginComponent},
-    {path: 'sidebar', component:SidebarComponentComponent},
-    {path: 'teacher-form',canActivate: [TeacherFormGuard], component:TeacherFormComponent},
-    {path: 'teacher-login', component: TeacherLoginComponent},
-    { path: 'admin', canActivate: [AuthGuard], component: AdminComponent,
-    children:[
-      {path: 'student', component:StudentComponentComponent},
-      {path: 'teacher', component:TeacherComponentComponent},
-      {path: 'course', component:CourseComponentComponent},
-      {path: 'edit-student', component:EditStudentComponent},
-      {path: 'pay', component:PayComponent},
-      {path: 'edit-course', component: EditCourseComponent},
-      {path: 'enrollment_admin', component: EnrollmentAdminComponent},
-      {path: 'reports', component: ReportsComponent},
-      {path: 'teacher-management', component: TeacherManagementComponent},
-      {path: 'attendance-reports', component: AttendanceReportsComponentComponent}
-    ]
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: MainMenuComponent },
+  { path: 'searcher', component: SearcherComponent },
+  {
+    path: 'student/:identityNumber',
+    component: VerifyInformationStudentsComponent,
   },
-    { path: 'supervisor', canActivate: [SupervisorGuard], component: SupervisorComponent,
-    children:[
-      {path: 'list-courses', component:ListCoursesComponent},
-      {path: 'edit-teacher', component:EditTeacherComponent},
-      {path: 'mycourses', component:MyCoursesComponent},
-      {path: 'edit-student', component:EditStudentComponent},
-      {path: 'edit-course', component: EditCourseComponent},
-      {path: 'teacher-management', component: TeacherManagementComponent},
-      {path: 'attendance-reports', component: AttendanceReportsComponentComponent}
-    ]
-    },
-    { path: 'teacher', canActivate: [TeacherGuard] ,component: TeacherDashboardComponent,
-    children:[
-      {path: 'mycourses', component:MyCoursesComponent},
-      {path: 'listcourses/:id', component: ListMycoursesComponent},
-      {path: 'attendance/:id', component: AttendanceComponent},
-      {path: 'edit-attendance/:id/:date', component: EditAttendanceComponent},
-      {path: 'grades', component: GradesComponent},
-      {path: 'report-attendance', component: ReportAttendanceComponent}
-    ]
-    },
-    { path: 'recover-data/:type' ,component: RecoverdataComponent},
-    { path: 'recover_user/:id', canActivate: [RecoverDataGuard] ,component: RecoverUserComponent},
-    { path: 'recover_password/:id', canActivate: [RecoverDataGuard] ,component: RecoverPasswordComponent}
-  
+  { path: 'shedule_selection', component: ScheduleSelectionComponent },
+  {
+    path: 'course_selection/:id',
+    canActivate: [CourseSelectionGuard],
+    component: CourseSelectionComponent,
+  },
+  {
+    path: 'enrollment/:id',
+    canActivate: [EnrollmentGuard],
+    component: EnrollmentFormComponent,
+  },
+  { path: 'level-form-selection', component: LevelFormSelectionComponent },
+  {
+    path: 'classroom_selection/:id/:identityNumber',
+    canActivate: [CourseSelectionGuard],
+    component: ClassroomSelectionComponent,
+  },
+  {
+    path: 'verify_information/:id/:identityNumber',
+    canActivate: [EnrollmentGuard],
+    component: VerifyInformationComponent,
+  },
+  { path: 'verify-certificate/:hash', component: VerifyCertificateComponent },
+  { path: 'registration-form', component: RegistrationFormComponent },
+  { path: 'voucher', component: VoucherComponentComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'sidebar', component: SidebarComponentComponent },
+  {
+    path: 'teacher-form',
+    canActivate: [TeacherFormGuard],
+    component: TeacherFormComponent,
+  },
+  { path: 'teacher-login', component: TeacherLoginComponent },
+  {
+    path: 'admin',
+    canActivate: [AuthGuard],
+    component: AdminComponent,
+    children: [
+      { path: 'student', component: StudentComponentComponent },
+      { path: 'teacher', component: TeacherComponentComponent },
+      { path: 'course', component: CourseComponentComponent },
+      { path: 'edit-student', component: EditStudentComponent },
+      { path: 'pay', component: PayComponent },
+      { path: 'edit-course', component: EditCourseComponent },
+      { path: 'enrollment_admin', component: EnrollmentAdminComponent },
+      { path: 'reports', component: ReportsComponent },
+      { path: 'teacher-management', component: TeacherManagementComponent },
+      {
+        path: 'attendance-reports',
+        component: AttendanceReportsComponentComponent,
+      },
+      { path: 'enrollment-report', component: EnrollmentReportComponent },
+    ],
+  },
+  {
+    path: 'supervisor',
+    canActivate: [SupervisorGuard],
+    component: SupervisorComponent,
+    children: [
+      { path: 'list-courses', component: ListCoursesComponent },
+      { path: 'edit-teacher', component: EditTeacherComponent },
+      { path: 'mycourses', component: MyCoursesComponent },
+      { path: 'edit-student', component: EditStudentComponent },
+      { path: 'edit-course', component: EditCourseComponent },
+      { path: 'teacher-management', component: TeacherManagementComponent },
+      {
+        path: 'attendance-reports',
+        component: AttendanceReportsComponentComponent,
+      },
+    ],
+  },
+  {
+    path: 'teacher',
+    canActivate: [TeacherGuard],
+    component: TeacherDashboardComponent,
+    children: [
+      { path: 'mycourses', component: MyCoursesComponent },
+      { path: 'listcourses/:id', component: ListMycoursesComponent },
+      { path: 'attendance/:id', component: AttendanceComponent },
+      { path: 'edit-attendance/:id/:date', component: EditAttendanceComponent },
+      { path: 'grades', component: GradesComponent },
+      { path: 'report-attendance', component: ReportAttendanceComponent },
+      { path: 'enrollment-aprove/:id', component: EnrollmentListComponent },
+    ],
+  },
+  { path: 'recover-data/:type', component: RecoverdataComponent },
+  {
+    path: 'recover_user/:id',
+    canActivate: [RecoverDataGuard],
+    component: RecoverUserComponent,
+  },
+  {
+    path: 'recover_password/:id',
+    canActivate: [RecoverDataGuard],
+    component: RecoverPasswordComponent,
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
