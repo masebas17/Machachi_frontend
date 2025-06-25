@@ -322,30 +322,42 @@ export class CourseComponentComponent implements OnInit {
   }
 
   async edit_course() {
-    this.courseId_edit = this.verSeleccion_curso_edit;
-    if (this.data_student && this.courseId_edit != 0) {
-      this.data_student.courseId = this.verSeleccion_curso_edit;
-      console.log(this.data_student.courseId);
-      const resp = await this._apiService.edit_student(
-        this.studentId,
-        this.data_student
-      );
-      console.log(resp);
-      if (resp) {
-        await Swal.fire({
-          icon: 'success',
-          title: 'Se realizaron el cambio de curso con éxito',
-          confirmButtonColor: '#1D71B8',
-        }).then(async (result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        });
-      }
-    } else {
-      Swal.fire({
+    const selectedCourseId = this.verSeleccion_curso_edit;
+
+    if (!selectedCourseId || selectedCourseId === 0) {
+      await Swal.fire({
         icon: 'error',
-        text: 'No esta escogiendo curso',
+        title: 'Curso no seleccionado',
+        text: 'Por favor, selecciona un curso antes de continuar.',
+        confirmButtonColor: '#1D71B8',
+      });
+      return;
+    }
+    try {
+      const response = await this._apiService.updateStudentCourse(
+        this.studentId,
+        { courseId: selectedCourseId }
+      );
+
+      if (!response) {
+        throw new Error('Respuesta no válida del servidor.');
+      }
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'Curso actualizado con éxito',
+        text: 'El cambio de curso se realizó con éxito.',
+        confirmButtonColor: '#1D71B8',
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error al actualizar el curso:', error);
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error?.message || 'Ocurrió un error inesperado.',
         confirmButtonColor: '#1D71B8',
       });
     }

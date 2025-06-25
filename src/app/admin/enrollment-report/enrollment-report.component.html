@@ -67,6 +67,7 @@
                 <th>Ord</th>
                 <th>Alumno</th>
                 <th>Estado</th>
+                <th>Cambiar Status</th>
               </tr>
             </thead>
             <tbody>
@@ -89,13 +90,37 @@
                     {{ enrollment.status }}
                   </span>
                 </td>
+                <td>
+                  <select
+                    class="form-select form-select-sm d-inline w-auto me-2"
+                    [(ngModel)]="enrollment.newStatus"
+                  >
+                    <option [ngValue]="null">-- escoja una opción --</option>
+                    <option value="Aprobado">Aprobado</option>
+                    <option value="Reprobado">Reprobado</option>
+                  </select>
+                  <button
+                    class="btn btn-primary btn-sm"
+                    (click)="updateEnrollmentStatus(enrollment)"
+                    [disabled]="
+                      !enrollment.newStatus ||
+                      enrollment.newStatus === enrollment.status
+                    "
+                  >
+                    Guardar
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
 
         <div class="mt-3">
-          <button class="btn btn-success" (click)="generateCertificates()">
+          <button
+            class="btn btn-success"
+            [disabled]="!fontsReady"
+            (click)="generateCertificates()"
+          >
             Generar Certificados PDF
           </button>
         </div>

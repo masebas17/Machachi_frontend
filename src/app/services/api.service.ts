@@ -378,6 +378,28 @@ export class ApiService {
       .toPromise();
   }
 
+  updateStudentEnrollmentStatus(id: number, payload: { status: string }) {
+    const options = {
+      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
+    };
+
+    return this.http.patch(
+      `${this.apiUrl}/api/enrollments/${id}`,
+      payload,
+      options
+    );
+  }
+
+  updateStudentCourse(studentId: number, data: { courseId: number }) {
+    const options = {
+      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
+    };
+
+    return this.http
+      .patch(`${this.apiUrl}/api/students/${studentId}/course`, data, options)
+      .toPromise();
+  }
+
   // get_Teacher_info(): Observable<any> {
   //   const options = {
   //     headers: new HttpHeaders({['x-token']: localStorage.getItem('jwt')})

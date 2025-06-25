@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { PdfMakeWrapper, Stack, Txt } from 'pdfmake-wrapper';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { HttpClient } from '@angular/common/http';
-PdfMakeWrapper.setFonts(pdfFonts);
-
+import { configurePdfFonts } from 'src/app/pdf/pdf-font-config';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-enrollment-report',
   templateUrl: './enrollment-report.component.html',
@@ -21,10 +20,20 @@ export class EnrollmentReportComponent implements OnInit {
   headerDiplomaBase64: string = '';
   logoVerticalBase64: string = '';
   backgroundImageBase64: string = '';
+  coordinatorSignatureBase64: string = '';
+  fontsReady = false;
 
-  constructor(private apiService: ApiService, private http: HttpClient) {}
+  constructor(
+    private apiService: ApiService,
+    private http: HttpClient,
+    private toastr: ToastrService
+  ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    await configurePdfFonts();
+
+    this.fontsReady = true;
+
     this.http
       .get('assets/pdf-images/firma-pDiego.txt', { responseType: 'text' })
       .subscribe((data) => (this.firmaParrocoBase64 = data));
@@ -44,6 +53,12 @@ export class EnrollmentReportComponent implements OnInit {
         responseType: 'text',
       })
       .subscribe((data) => (this.backgroundImageBase64 = data));
+
+    this.http
+      .get('assets/pdf-images/firma-coordinador.txt', {
+        responseType: 'text',
+      })
+      .subscribe((data) => (this.coordinatorSignatureBase64 = data));
   }
 
   async capturarPeriodo() {
@@ -66,6 +81,30 @@ export class EnrollmentReportComponent implements OnInit {
   async capturarCurso() {
     const resp = await this.apiService.getEnrollmentsByCourse(this.opcionCurso);
     this.enrollments = resp.data;
+  }
+
+  updateEnrollmentStatus(enrollment: any): void {
+    if (!enrollment.newStatus || enrollment.newStatus === enrollment.status)
+      return;
+
+    const payload = { status: enrollment.newStatus };
+
+    this.apiService
+      .updateStudentEnrollmentStatus(enrollment.id, payload)
+      .subscribe({
+        next: () => {
+          enrollment.status = enrollment.newStatus;
+          enrollment.newStatus = null;
+          this.toastr.success('Se ha marcado a un alumno como aprobado');
+          if (this.opcionCurso) {
+            this.capturarCurso(); // Actualiza la lista de inscripciones
+          }
+        },
+        error: (err) => {
+          console.error('Error al actualizar el estado', err);
+          this.toastr.error('Se ha marcado a un alumno como reprobado');
+        },
+      });
   }
 
   generateCertificates() {
@@ -125,10 +164,9 @@ export class EnrollmentReportComponent implements OnInit {
               .alignment('center')
               .margin([0, 10]).end,
             new Txt('CERTIFICA')
-              .fontSize(18)
+              .fontSize(20)
               .alignment('center')
-              .italics()
-              .bold()
+              .font('Caprasimo')
               .color('#0073C6')
               .margin([0, 10]).end,
             new Txt('Que el (la) niño(a):')
@@ -144,20 +182,20 @@ export class EnrollmentReportComponent implements OnInit {
               'Ha culminado con responsabilidad el nivel de: ',
               { text: nivelDiploma.toUpperCase(), bold: true },
             ])
-              .fontSize(14)
+              .fontSize(12)
               .alignment('center')
               .margin([0, 5]).end,
             new Txt([
               'Correspondiente al período: ',
               { text: periodo, bold: true },
             ])
-              .fontSize(14)
+              .fontSize(12)
               .alignment('center')
               .margin([0, 5]).end,
             new Txt(`Machachi, ${fechaDiploma}`)
               .fontSize(12)
               .alignment('center')
-              .margin([0, 20, 0, 10]).end,
+              .margin([0, 10, 0, 10]).end,
 
             {
               columns: [
@@ -166,15 +204,15 @@ export class EnrollmentReportComponent implements OnInit {
                     { text: '________________________', alignment: 'center' },
                     {
                       image: this.firmaParrocoBase64,
-                      width: 100,
+                      width: 150,
                       alignment: 'center',
-                      margin: [0, -40, 0, 0],
+                      margin: [0, -50, 0, 0],
                     },
                     {
                       text: 'P. Diego Tanicuchí',
                       alignment: 'center',
                       fontSize: 8,
-                      margin: [0, -10, 0, 0],
+                      margin: [0, -18, 0, 0],
                     },
                     {
                       text: 'Párroco de Machachi',
@@ -189,10 +227,16 @@ export class EnrollmentReportComponent implements OnInit {
                   stack: [
                     { text: '________________________', alignment: 'center' },
                     {
+                      image: this.coordinatorSignatureBase64,
+                      width: 135,
+                      alignment: 'center',
+                      margin: [0, -55, 0, 0],
+                    },
+                    {
                       text: 'Coordinador de Catequesis',
                       alignment: 'center',
                       fontSize: 8,
-                      margin: [0, 5, 0, 0],
+                      margin: [0, -20, 0, 0],
                     },
                   ],
                   width: '50%',
@@ -206,15 +250,15 @@ export class EnrollmentReportComponent implements OnInit {
                   image: enrollment.qr.qrBase64,
                   width: 40,
                   alignment: 'center',
-                  margin: [0, -10, 0, 0],
+                  margin: [0, 2, 0, 0],
                 }
               : null,
 
             new Txt('Generado por el Sistema de Catequesis - Documento oficial')
-              .italics()
               .fontSize(6)
               .alignment('center')
-              .margin([0, 2, 0, 0]).end,
+              .italics()
+              .margin([0, -2, 0, 0]).end,
           ],
         });
 
@@ -247,6 +291,6 @@ export class EnrollmentReportComponent implements OnInit {
       }
     }
 
-    pdf.create().open();
+    pdf.create().print();
   }
 }
