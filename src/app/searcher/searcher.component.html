@@ -1,150 +1,258 @@
 <app-header-component></app-header-component>
 <section class="searcher">
-    <div class="letras">
-        <h1 class="titulo">Consultar Datos de Matrículación del Estudiante</h1>
-    </div>
-    <div class="contenedor">
-    <br>
+  <div class="letras">
+    <h1 class="titulo">Consultar Datos de Matrículación del Estudiante</h1>
+  </div>
+  <div class="contenedor">
+    <br />
     <div class="formulario">
-        <form [formGroup]="Form" (ngSubmit)="consultar()" >
-            <div class="mb-5 mt-5">
-                <label>Ingrese su Número de Cédula para realizar una nueva consulta</label><br><br>
-                <input type="text" class="form-control" formControlName="identityNumber" id="numcedula" placeholder="Ingrese el Número de Cédula" name="identityNumber" [ngClass]="{'is-invalid':Form.get('identityNumber')?.errors && Form.get('identityNumber')?.touched}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="10">
-                <div *ngIf="Form.get('identityNumber')?.errors">
-                    <div class="text-danger" *ngIf="Form.get('identityNumber')?.hasError('required') && Form.get('identityNumber')?.touched">Ingrese un número de cédula válido</div>
-                    <div class="text-danger" *ngIf="Form.get('identityNumber')?.hasError('maxLength')">Se debe llenar 10 dígitos</div>
-                    <div class="text-danger" *ngIf="Form.get('identityNumber')?.hasError('minLength')">Se debe llenar 10 dígitos</div>
-                </div>
-            <button [disabled]="Form.invalid" type="submit" class="btn btn-success">Consultar</button>
-            <a href="/home" class="btn btn-danger">Cancelar</a>
+      <form [formGroup]="Form" (ngSubmit)="consultar()">
+        <div class="mb-5 mt-5">
+          <label
+            >Ingrese su Número de Cédula para realizar una nueva consulta</label
+          ><br /><br />
+          <input
+            type="text"
+            class="form-control"
+            formControlName="identityNumber"
+            id="numcedula"
+            placeholder="Ingrese el Número de Cédula"
+            name="identityNumber"
+            [ngClass]="{
+              'is-invalid':
+                Form.get('identityNumber')?.errors &&
+                Form.get('identityNumber')?.touched
+            }"
+            oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+            maxlength="10"
+          />
+          <div *ngIf="Form.get('identityNumber')?.errors">
+            <div
+              class="text-danger"
+              *ngIf="
+                Form.get('identityNumber')?.hasError('required') &&
+                Form.get('identityNumber')?.touched
+              "
+            >
+              Ingrese un número de cédula válido
+            </div>
+            <div
+              class="text-danger"
+              *ngIf="Form.get('identityNumber')?.hasError('maxLength')"
+            >
+              Se debe llenar 10 dígitos
+            </div>
+            <div
+              class="text-danger"
+              *ngIf="Form.get('identityNumber')?.hasError('minLength')"
+            >
+              Se debe llenar 10 dígitos
+            </div>
+          </div>
+          <button
+            [disabled]="Form.invalid"
+            type="submit"
+            class="btn btn-success"
+          >
+            Consultar
+          </button>
+          <a href="/home" class="btn btn-danger">Cancelar</a>
         </div>
-        </form>
+      </form>
     </div>
     <div class="limpieza"></div>
-</div>
+  </div>
 </section>
 <!-- modal Content -->
 <app-footer-component></app-footer-component>
 
-<div class="backdrop" [ngStyle]="{'display':display}"></div>
-<div class="modal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" [ngStyle]="{'display': display}">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #0F79B9; color: white;">
-          <h3 class="modal-title" id="staticBackdropLabel">Reporte de Estudiantes Matriculados</h3>
-          <button type="button" class="btn-close"  aria-label="Close" (click)="onCloseHandled()"></button>
-        </div>
-        <div class="modal-body">
-          <h5>Datos del Estudiante</h5>
-            <div class="table-responsive">    
-                <table class="table table-bordered table-hover">
-                  <thead class="table-primary">
-                    <tr class = "text-center">
-                      <th >Cédula de Identidad</th>
-                      <th>Apellidos</th>
-                      <th>Nombres</th>
-                      <th>Periodo actual</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngIf="datos_of_students != null">
-                      <td class = "text-center" id="num_cedula">{{datos_of_students.identityNumber}}</td>
-                      <td class = "text-center">{{datos_of_students.lastName | uppercase}}</td>
-                      <td class = "text-center">{{datos_of_students.name | uppercase}}</td> 
-                      <td class = "text-center">{{this.period}}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <br>
-          <div class="row">
-                <div class="col-sm-6">
-              <h5>Datos de Nivel y Horario</h5>
-              <div class="table-responsive">    
-                <table class="table table-bordered table-hover">
-                  <thead class="table-success">
-                    <tr class = "text-center">
-                      <!-- <th id="num_cedula">Cédula</th> -->
-                      <th>Nivel</th>
-                      <th>Horario</th>
-                      <th>Paralelo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngIf="datos_of_students != null">
-                      <!-- <td class = "text-center" id="num_cedula">{{student.identityNumber}}</td> -->
-                      <td class = "text-center">{{datos_of_students.Course.Schedule.Level.name}}</td>
-                      <td class = "text-center">{{datos_of_students.Course.Schedule.weekDay + ' ' + datos_of_students.Course.Schedule.startTime + ' ' + '-'+ ' ' + datos_of_students.Course.Schedule.endTime}}</td>
-                      <td class = "text-center">{{datos_of_students.Course.name}}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <h5>Estado de Matriculación</h5>
-              <div class="table-responsive">    
-                <table class="table table-bordered table-hover">
-                  <thead class="table-danger">
-                    <tr class = "text-center">
-                      <!-- <th id="num_cedula">Cédula</th> -->
-                      <th>Matriculación</th>
-                      <th>N° de Recibo</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngIf="datos_of_students != null">
-                      <!-- <td class = "text-center" id="num_cedula">{{student.identityNumber}}</td> -->
-                      <td class = "text-center">{{datos_of_students.payment | enrollment}}</td>
-                      <td class = "text-center">{{datos_of_students.payment }}</td>
-                      <td class = "text-center">{{datos_of_students.payment | asignated }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <br>
-          <h5>Datos de los Catequistas</h5>
-          <div class="table-responsive">    
-            <table class="table table-bordered table-hover">
-              <thead class="table-warning">
-                <tr class = "text-center">
-                  <th>Nombres</th>
-                  <th>N° de Contacto</th>
-                </tr>
-              </thead>
-              <tbody *ngIf="datos_of_students !=null">
-                <tr *ngIf="datos_of_students.Course.Teachers != null">
-                  <!-- <td class = "text-center" >{{datos_of_students.Course.Teacher.lastName + ' ' + datos_of_students.Course.Teacher.name | uppercase }}</td>
-                  <td class = "text-center">{{datos_of_students.Course.Teacher.phone}}</td> -->
-                  <td  *ngIf="datos_of_students.Course.principalId != null" class="text-center">
-                      <ul>
-                        <li *ngFor="let teachers of datos_of_students.Course.Teachers" style="list-style: none;">{{teachers.lastName + ' ' + teachers.name | uppercase}}</li>
-                       </ul> 
-                  </td>
-                  <td  *ngIf="datos_of_students.Course.principalId != null" class="text-center">
-                    <ul>
-                      <li *ngFor="let teachers of datos_of_students.Course.Teachers" style="list-style: none;">{{teachers.phone}}</li>
-                     </ul> 
+<div class="backdrop" [ngStyle]="{ display: display }"></div>
+<div
+  class="modal"
+  id="staticBackdrop"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+  [ngStyle]="{ display: display }"
+>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #0f79b9; color: white">
+        <h3 class="modal-title" id="staticBackdropLabel">
+          Reporte de Estudiantes Matriculados
+        </h3>
+        <button
+          type="button"
+          class="btn-close"
+          aria-label="Close"
+          (click)="onCloseHandled()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <h5>Datos del Estudiante</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+              <tr class="text-center">
+                <th>Cédula de Identidad</th>
+                <th>Apellidos</th>
+                <th>Nombres</th>
+                <th>Periodo actual</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="datos_of_students != null">
+                <td class="text-center" id="num_cedula">
+                  {{ datos_of_students.identityNumber }}
                 </td>
-                </tr>
-                <tr *ngIf="datos_of_students.Course.Teachers == null">
-                  <!-- <td class = "text-center text-danger">NO ASIGNADO</td> -->
-                  <td *ngIf="datos_of_students.Course.principalId == null" class="text-center text-danger">No Asignados</td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
+                <td class="text-center">
+                  {{ datos_of_students.lastName | uppercase }}
+                </td>
+                <td class="text-center">
+                  {{ datos_of_students.name | uppercase }}
+                </td>
+                <td class="text-center">{{ this.period }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <br />
+        <div class="row">
+          <div class="col-sm-6">
+            <h5>Datos de Nivel y Horario</h5>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead class="table-success">
+                  <tr class="text-center">
+                    <!-- <th id="num_cedula">Cédula</th> -->
+                    <th>Nivel</th>
+                    <th>Horario</th>
+                    <th>Paralelo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="datos_of_students != null">
+                    <!-- <td class = "text-center" id="num_cedula">{{student.identityNumber}}</td> -->
+                    <td class="text-center">
+                      {{ datos_of_students.Course.Level.name }}
+                    </td>
+                    <td class="text-center">
+                      {{
+                        datos_of_students.Course.Schedule.weekDay +
+                          " " +
+                          datos_of_students.Course.Schedule.startTime +
+                          " " +
+                          "-" +
+                          " " +
+                          datos_of_students.Course.Schedule.endTime
+                      }}
+                    </td>
+                    <td class="text-center">
+                      {{ datos_of_students.Course.name }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <h5>Estado de Matriculación</h5>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead class="table-danger">
+                  <tr class="text-center">
+                    <!-- <th id="num_cedula">Cédula</th> -->
+                    <th>Matriculación</th>
+                    <th>N° de Recibo</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="datos_of_students != null">
+                    <!-- <td class = "text-center" id="num_cedula">{{student.identityNumber}}</td> -->
+                    <td class="text-center">
+                      {{ datos_of_students.payment | enrollment }}
+                    </td>
+                    <td class="text-center">{{ datos_of_students.payment }}</td>
+                    <td class="text-center">
+                      {{ datos_of_students.payment | asignated }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" (click)="onCloseHandled()">Aceptar</button>
-          <button type="button" class="btn btn-warning" (click)="generatePDF()">Generar Acta de Compromiso</button> 
-          <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+        <br />
+        <h5>Datos de los Catequistas</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover">
+            <thead class="table-warning">
+              <tr class="text-center">
+                <th>Nombres</th>
+                <th>N° de Contacto</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="datos_of_students != null">
+              <tr *ngIf="datos_of_students.Course.Teachers != null">
+                <!-- <td class = "text-center" >{{datos_of_students.Course.Teacher.lastName + ' ' + datos_of_students.Course.Teacher.name | uppercase }}</td>
+                  <td class = "text-center">{{datos_of_students.Course.Teacher.phone}}</td> -->
+                <td
+                  *ngIf="datos_of_students.Course.principalId != null"
+                  class="text-center"
+                >
+                  <ul>
+                    <li
+                      *ngFor="let teachers of datos_of_students.Course.Teachers"
+                      style="list-style: none"
+                    >
+                      {{ teachers.lastName + " " + teachers.name | uppercase }}
+                    </li>
+                  </ul>
+                </td>
+                <td
+                  *ngIf="datos_of_students.Course.principalId != null"
+                  class="text-center"
+                >
+                  <ul>
+                    <li
+                      *ngFor="let teachers of datos_of_students.Course.Teachers"
+                      style="list-style: none"
+                    >
+                      {{ teachers.phone }}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+              <tr *ngIf="datos_of_students.Course.Teachers == null">
+                <!-- <td class = "text-center text-danger">NO ASIGNADO</td> -->
+                <td
+                  *ngIf="datos_of_students.Course.principalId == null"
+                  class="text-center text-danger"
+                >
+                  No Asignados
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onCloseHandled()"
+        >
+          Aceptar
+        </button>
+        <button type="button" class="btn btn-warning" (click)="generatePDF()">
+          Generar Acta de Compromiso
+        </button>
+        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+      </div>
+    </div>
   </div>
 </div>
-

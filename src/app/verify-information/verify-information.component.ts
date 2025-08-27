@@ -31,6 +31,7 @@ export class VerifyInformationComponent implements OnInit {
   pipe = new DatePipe('en-US');
   fecha = null;
   formattedDate: string;
+  current_level_order: number = 0;
 
   constructor(
     private activateRoute: ActivatedRoute,
@@ -69,6 +70,7 @@ export class VerifyInformationComponent implements OnInit {
       // console.log(parseInt(params['id']))
       // console.log(parseInt(params['identityNumber']))
       this.courseId = parseInt(params['id']);
+      this.current_level_order = parseInt(params['levelOrder']);
       this.identity_Number = params['identityNumber'];
     });
     this.consultar();
@@ -76,7 +78,6 @@ export class VerifyInformationComponent implements OnInit {
 
   consultar() {
     this._apiService.getStudent(this.identity_Number).subscribe((resp: any) => {
-      console.log(resp.data);
       this.datos_of_students = resp.data.student;
 
       this.Formstudent.patchValue({
@@ -101,19 +102,17 @@ export class VerifyInformationComponent implements OnInit {
         phone1: values.phone1,
         email: values.email,
         address: values.address,
-        courseId: this.courseId,
-        payment: null,
-        aproved: null,
+        institutionId: this.courseId,
+        levelOrder: this.current_level_order,
       };
 
       console.log(AuxValue);
 
-      const resp = await this._apiService.edit_student_enrollment(
+      const resp = await this._apiService.updateAndEnrollStudent(
         this.datos_of_students.id,
         AuxValue
       );
       // console.log(resp);
-      this.qrCode = resp.data.qrCode;
       if (resp) {
         const myTimeout = setTimeout(() => {
           Swal.fire({
@@ -137,9 +136,12 @@ export class VerifyInformationComponent implements OnInit {
               this._apiService
                 .getStudent(this.identity_Number)
                 .subscribe((resp_student: any) => {
-                  console.log(resp_student.data);
+                  console.log('respuesta data', resp_student.data);
                   this.student = resp_student.data.student;
-                  this.formattedDate = this.formatUpdatedAt(this.student.updatedAt)
+                  this.qrCode = resp_student.data.qrCode;
+                  this.formattedDate = this.formatUpdatedAt(
+                    this.student.updatedAt
+                  );
                   this.createPDF(false);
                   localStorage.clear();
                   this.router.navigate(['/home']);
@@ -166,27 +168,35 @@ export class VerifyInformationComponent implements OnInit {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        timeZone: 'America/Guayaquil' 
+        timeZone: 'America/Guayaquil',
       };
       const formatter = new Intl.DateTimeFormat('es-ES', options);
       return formatter.format(date);
     }
-    return ''; 
+    return '';
   }
 
   createPDF(isCopy: boolean) {
-    this.pdfGeneratorService.generatePDF(this.student, this.pipe, this.formattedDate, isCopy ? 'copia' : 'original', this.qrCode).subscribe( voucher => {
-      const pdf = pdfMake.createPdf(voucher);
-      pdf.open();
-      pdf.download(
-        'Acta de Compromiso' +
-          ' ' +
-          this.student.lastName +
-          ' ' +
-          this.student.name +
-          '.pdf'
-      );
-    })
+    this.pdfGeneratorService
+      .generatePDF(
+        this.student,
+        this.pipe,
+        this.formattedDate,
+        isCopy ? 'copia' : 'original',
+        this.qrCode
+      )
+      .subscribe((voucher) => {
+        const pdf = pdfMake.createPdf(voucher);
+        pdf.open();
+        pdf.download(
+          'Acta de Compromiso' +
+            ' ' +
+            this.student.lastName +
+            ' ' +
+            this.student.name +
+            '.pdf'
+        );
+      });
   }
 
   // createPDF() {
@@ -213,7 +223,7 @@ export class VerifyInformationComponent implements OnInit {
 
   //       {
   //         columns:[
-  //           { 
+  //           {
   //             text: 'Datos de Matriculación - Periodo: 2023-2024\n\n',
   //             style: 'subheader',
   //             margin: [10, 0],
@@ -300,9 +310,9 @@ export class VerifyInformationComponent implements OnInit {
   //     },
   //     images: {
   //       header:
-          
+
   //       footer:
-          
+
   //         qrCode: this.qrCode,
   //     },
   //   };

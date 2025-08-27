@@ -45,7 +45,7 @@ import { GradesComponent } from './teacher-dashboard/grades/grades.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LOCALE_ID } from '@angular/core';
 import localeEc from '@angular/common/locales/es-EC';
-import { registerLocaleData } from "@angular/common";
+import { registerLocaleData } from '@angular/common';
 import { BaptizedPipe } from './shared/baptized.pipe';
 import { LevelFormSelectionComponent } from './level-form-selection/level-form-selection.component';
 import { VerifyInformationComponent } from './verify-information/verify-information.component';
@@ -55,7 +55,7 @@ import { RegistrationFormComponent } from './registration-form/registration-form
 import { EnrollmentAdminComponent } from './admin/enrollment-admin/enrollment-admin.component';
 import { ReportsComponent } from './admin/reports/reports.component';
 import { EditAttendanceComponent } from './teacher-dashboard/edit-attendance/edit-attendance.component';
-import {  ToastrModule } from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
 import { TeacherManagementComponent } from './admin/teacher-management/teacher-management.component';
 import { ReportAttendanceComponent } from './teacher-dashboard/report-attendance/report-attendance.component';
 import { AttendanceReportsComponentComponent } from './admin/attendance-reports-component/attendance-reports-component.component';
@@ -63,10 +63,9 @@ import { FilterPipe } from './shared/filter.pipe';
 import { VerifyInformationStudentsComponent } from './StudentsComponents/verify-information-students/verify-information-students.component';
 import { EnrollmentListComponent } from './teacher-dashboard/enrollment-list/enrollment-list.component';
 import { EnrollmentReportComponent } from './admin/enrollment-report/enrollment-report.component';
-import { VerifyCertificateComponent } from './verify-certificate/verify-certificate.component' ;
+import { VerifyCertificateComponent } from './verify-certificate/verify-certificate.component';
+import { SchoolFormSelectionComponent } from './school-form-selection/school-form-selection.component';
 registerLocaleData(localeEc, 'es-EC');
-
-
 
 @NgModule({
   declarations: [
@@ -121,7 +120,8 @@ registerLocaleData(localeEc, 'es-EC');
     VerifyInformationStudentsComponent,
     EnrollmentListComponent,
     EnrollmentReportComponent,
-    VerifyCertificateComponent
+    VerifyCertificateComponent,
+    SchoolFormSelectionComponent,
   ],
   imports: [
     BrowserModule,
@@ -134,13 +134,15 @@ registerLocaleData(localeEc, 'es-EC');
     NgbModule,
     ToastrModule.forRoot(),
   ],
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: HttpRequestInterceptor,
-    multi: true,
-    
-}, { provide: LOCALE_ID, useValue: 'es-EC' }],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptor,
+      multi: true,
+    },
+    { provide: LOCALE_ID, useValue: 'es-EC' },
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule { }
+export class AppModule {}

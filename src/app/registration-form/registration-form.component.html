@@ -116,7 +116,7 @@
             <tr *ngIf="datos_of_students != null">
               <td class="text-center">
                 {{
-                  datos_of_students.Course.Schedule.Level.name +
+                  datos_of_students.Course.Level.name +
                     " " +
                     "(" +
                     datos_of_students.Course.Schedule.weekDay +
@@ -130,7 +130,7 @@
                 }}
               </td>
               <td class="text-center">
-                <strong>{{ datos_of_students.aproved | aproved }}</strong>
+                <strong>{{ enrollmentStatus }}</strong>
               </td>
             </tr>
           </tbody>
@@ -150,35 +150,38 @@
             <tr
               *ngIf="
                 datos_of_students != null &&
-                datos_of_students.aproved === true &&
-                datos_of_students.Course.Schedule.Level.id != 6
+                dataEnrollmentStudent.status === 'Aprobado' &&
+                datos_of_students.Course.Level.id != 6
               "
             >
               <td class="text-center">
-                {{
-                  current_level.Level.name +
-                    " " +
-                    "(" +
-                    current_level.weekDay +
-                    " " +
-                    current_level.startTime +
-                    " " +
-                    "-" +
-                    " " +
-                    current_level.endTime +
-                    ")"
-                }}
+                {{ current_level.name }}
               </td>
-              <td class="text-center">
+              <!-- <td class="text-center">
                 <button
                   type="button"
-                  [name]="this.current_level.id"
+                  [name]="this.datos_of_students.Course.Schedule.id"
                   (click)="consult_courses($event)"
                   class="btn btn-primary actions"
                   type="button"
                 >
                   Escoger Cursos
                 </button>
+              </td> -->
+
+              <td class="text-center">
+                <select
+                  class="form-select"
+                  [(ngModel)]="selectedInstitution"
+                  (change)="onInstitutionSelect()"
+                >
+                  <option [ngValue]="null" disabled selected>
+                    Seleccione una institución
+                  </option>
+                  <option *ngFor="let inst of institutions" [ngValue]="inst">
+                    {{ inst.name }}
+                  </option>
+                </select>
               </td>
             </tr>
           </tbody>

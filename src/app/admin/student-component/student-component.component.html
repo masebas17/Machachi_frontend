@@ -6,7 +6,22 @@
   <div class="contenedor">
     <div class="row">
       <div class="col-sm-4">
-        <label for="">Escoger el Nivel:</label>
+        <label for="">Escoger el periodo:</label>
+        <select
+          class="form-select"
+          aria-label="Default select example"
+          name="Level"
+          [(ngModel)]="opcion_periodo"
+          (change)="capturar_periodo()"
+        >
+          <option value="2025">2025</option>
+        </select>
+      </div>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-sm-4">
+        <label for="">Escoger Horario:</label>
         <select
           class="form-select"
           aria-label="Default select example"
@@ -14,44 +29,51 @@
           [(ngModel)]="opcionSeleccionada"
           (change)="capturar()"
         >
+          <option selected>-- Escoja un Horario --</option>
           <option *ngFor="let shedule of shedules.data" [ngValue]="shedule.id">
             {{
-              shedule.Level.name +
-                " " +
-                "(" +
-                shedule.weekDay +
+              shedule.weekDay +
                 " " +
                 shedule.startTime +
                 " " +
                 "a" +
                 " " +
-                shedule.endTime +
-                ")"
+                shedule.endTime
             }}
           </option>
         </select>
       </div>
       <div class="col-sm-4">
-        <label for="">Escoger el curso:</label>
+        <label for="">Escoger el paralelo:</label>
         <select
           class="form-select"
           aria-label="Default select example"
           name="course"
           [(ngModel)]="seleccion_curso"
-          (change)="capturar_curso()"
+          (ngModelChange)="capturar_curso()"
         >
-          <option selected>-- Escoja un Paralelo --</option>
-          <ng-container *ngFor="let course_selection of courses">
-            <option
-              *ngIf="course_selection.count < course_selection.maxStudents"
-              [ngValue]="course_selection.id"
-            >
-              {{ "Paralelo" + " " + course_selection.name }}
-            </option>
-          </ng-container>
+          <option selected>-- Escoja un paralelo --</option>
+          <option
+            *ngFor="let course_selection of courses"
+            [ngValue]="course_selection.id"
+          >
+            {{
+              "Paralelo" +
+                " " +
+                course_selection.name +
+                " - " +
+                course_selection.Level.name
+            }}
+          </option>
         </select>
       </div>
     </div>
+    <hr />
+    <p>
+      Al escoger un horario y paralelo se asignará al nuevo registro de
+      estudiante automáticamente a la Institución a la que pertenece ese curso.
+    </p>
+    <hr />
     <br />
     <form
       [formGroup]="Formstudent"

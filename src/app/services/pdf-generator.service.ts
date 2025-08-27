@@ -51,7 +51,7 @@ export class PdfGeneratorService {
               margin: [0, 10, 0, 0],
             },
             {
-              text: 'Datos de Matriculación - Periodo: 2024-2025\n\n',
+              text: 'Datos de Matriculación - Periodo: 2025-2026\n\n',
               style: 'subheader',
               margin: [10, 0],
             },
@@ -77,19 +77,25 @@ export class PdfGeneratorService {
                     {
                       text: [
                         { text: 'Nivel: ', bold: true },
-                        { text: student.Course.Schedule.Level.name, bold: true},
-                      ],
-                    },
-                    {
-                      text: [
-                        { text: 'Paralelo: ', bold: true },
-                        {text: student.Course.name, bold: true},
+                        { text: student.Course.Level.name, bold: true },
                       ],
                     },
                     {
                       text: [
                         {
-                          text: '\n *Nota: El curso escogido puede cambiar una vez terminado el proceso de matriculación, puesto que el sistema realiza una verificación de la edad o parámetros que puedan influir como el espacio físico.',
+                          text: `Paralelo: ${student.Course.name} ${
+                            student.Course.Institution?.name
+                              ? '- ' + student.Course.Institution.name
+                              : ''
+                          }`,
+                          bold: true,
+                        },
+                      ],
+                    },
+                    {
+                      text: [
+                        {
+                          text: '\n *Nota: El curso fue asignado automáticamente por el sistema como una nueva forma de manejar la matrícula y los cursos por edades.',
                           fontSize: 6,
                           italics: true,
                           bold: true,
@@ -113,12 +119,9 @@ export class PdfGeneratorService {
             },
             {
               text: [
-                'Yo' +
-                  ' ',
-                  { text: student.parentName, bold: true},
-                  ',' +
-                  ' ' +
-                  'como Padre/Madre/Representante de mi hijo/a, ',
+                'Yo' + ' ',
+                { text: student.parentName, bold: true },
+                ',' + ' ' + 'como Padre/Madre/Representante de mi hijo/a, ',
                 { text: 'me comprometo a: \n\n', fontSize: 12, bold: true },
               ],
               margin: [10, 10],

@@ -47,14 +47,14 @@ export class ApiService {
   getShedule(): Observable<datashedule[]> {
     const currentDate: Date = new Date();
     return this.http.post<datashedule[]>(
-      `${this.apiUrl}/api/schedules/enrollment/2024`,
+      `${this.apiUrl}/api/schedules/enrollment/2025`,
       { currentDate }
     );
   }
 
   getShedulebyYear(): Observable<datasheduleYear[]> {
     return this.http.get<datasheduleYear[]>(
-      `${this.apiUrl}/api/schedules/2024`
+      `${this.apiUrl}/api/schedules/2025`
     );
   }
 
@@ -80,6 +80,13 @@ export class ApiService {
   async enrollemnt(Student: dataStudent) {
     const resp: any = await this.http
       .post(`${this.apiUrl}/api/students`, Student)
+      .toPromise();
+    return resp;
+  }
+
+  async auto_enrollment(Student: any) {
+    const resp: any = await this.http
+      .post(`${this.apiUrl}/api/students/auto-enroll`, Student)
       .toPromise();
     return resp;
   }
@@ -406,4 +413,47 @@ export class ApiService {
   // };
   //   return this.http.get<any>(`${this.apiUrl}/api/teachers/info`, options)
   // }
+
+  getInstitutions(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/institutions`);
+  }
+
+  getActiveEnrollmentLevels(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/levels/active`);
+  }
+
+  getAvailableCourses(institutionId: number, levelOrder: number): Promise<any> {
+    return this.http
+      .get(
+        `${this.apiUrl}/api/courses/available/${institutionId}/${levelOrder}`
+      )
+      .toPromise();
+  }
+
+  // updateAndEnrollStudent(studentId: number, dataStudent: any): Promise<any> {
+  //   const url = `${this.apiUrl}/enrollment-student/${studentId}`;
+  //   return this.http.put(url, dataStudent).toPromise();
+  // }
+
+  async updateAndEnrollStudent(id: any, Student: dataStudent | any) {
+    const resp: any = await this.http
+      .put(`${this.apiUrl}/api/students/update-enrollment/${id}`, Student)
+      .toPromise();
+    return resp;
+  }
+
+  getCourseById(id: number): Promise<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/courses/${id}`).toPromise();
+  }
+
+  async enrollmentAdmin(Student: any) {
+    const options = {
+      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
+    };
+
+    const resp: any = await this.http
+      .post(`${this.apiUrl}/api/students/admin-enroll`, Student, options)
+      .toPromise();
+    return resp;
+  }
 }
