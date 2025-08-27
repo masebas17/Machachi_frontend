@@ -50,6 +50,7 @@ import { VerifyInformationStudentsComponent } from './StudentsComponents/verify-
 import { EnrollmentListComponent } from './teacher-dashboard/enrollment-list/enrollment-list.component';
 import { EnrollmentReportComponent } from './admin/enrollment-report/enrollment-report.component';
 import { VerifyCertificateComponent } from './verify-certificate/verify-certificate.component';
+import { SchoolFormSelectionComponent } from './school-form-selection/school-form-selection.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -72,12 +73,16 @@ const routes: Routes = [
   },
   { path: 'level-form-selection', component: LevelFormSelectionComponent },
   {
+    path: 'school-form-selection',
+    component: SchoolFormSelectionComponent,
+  },
+  {
     path: 'classroom_selection/:id/:identityNumber',
     canActivate: [CourseSelectionGuard],
     component: ClassroomSelectionComponent,
   },
   {
-    path: 'verify_information/:id/:identityNumber',
+    path: 'verify_information/:id/:levelOrder/:identityNumber',
     canActivate: [EnrollmentGuard],
     component: VerifyInformationComponent,
   },

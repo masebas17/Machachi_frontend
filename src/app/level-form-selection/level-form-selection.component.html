@@ -1,64 +1,163 @@
 <app-header-component></app-header-component>
 <section class="searcher">
-    <div class="letras">
-        <h1 class="titulo">Matriculación Catequesis 2024-2025</h1>
-    </div>
-    <br>
-    <div class="letras indicaciones">
-        <h3>Detalles y Recomendaciones</h3>
-        <p class="text-danger">¡Lea con atención!</p>
-        <p>Bienvenidos a la plataforma de Matriculación de catequesis que la Parroquia Santiago Apóstol de Machachi pone a dispocisión de la 
-           comunidad con la finalidad de realizar un proceso rápido y automatizado. Sigamos los siguientes pasos: <br> 1. Si usted es nuevo en la catequesis y va al primer nivel de INICIACIÓN, aplaste el primer botón que se muestra
-           en la parte de abajo <br> 2.- Si usted va a los otros niveles superiores, ya estuvo en la catequesis previamente, con el número de cédula 
-           realiza su matrícula aplastando en el segundo Botón. 
-        </p>
-        <!-- <h6 class="text-danger">Iniciación, Reconciliación, Eucaristía, Año Bíblico, R.P.B.(Renovación de Promesas Bautismales), y Confirmación </h6> -->
-        <h4 class="text-danger">Los Horarios de Matriculación son:</h4>
-        <p>Iniciación: 20 y 21 de Agosto <br> Reconciliación: 22 y 23 de Agosto <br> Eucaristía: 24 y 25 de Agosto 
-        <br>Año Bíblico: 26 y 27 de Agosto <br>R.P.B.(Renovación de Promesas Bautismales): 28 y 29 de Agosto <br>Confirmación: 30 y 31 de Agosto</p>
-    </div>
-    <div class="contenedor"> 
-        <br>
-        <button (click)="verify_level()" class="service-items float-contenedor texto-centro ">
-            <img src="../assets/images/level-form-selection/registration_icon.png" class="img-responsive"/>
-            <h3>Inscripciones para Iniciación</h3>
-        </button>
-        <button [routerLink]="['/registration-form']" class="service-items float-contenedor texto-centro">
-            <img src="../assets/images/level-form-selection/enrollment_icon.png" class="img-responsive"/>
-            <h3>Matrículas niveles superiores</h3>
-        </button>
-        <div class="limpieza"></div>
-    </div>
+  <div class="letras">
+    <h1 class="titulo">Matriculación Catequesis 2025-2026</h1>
+  </div>
+  <br />
+  <div class="letras indicaciones">
+    <h3>Detalles y Recomendaciones</h3>
+    <p class="text-danger">¡Lea con atención!</p>
+    <p>
+      Bienvenidos a la plataforma de Matriculación de catequesis que la
+      Parroquia Santiago Apóstol de Machachi pone a dispocisión de la comunidad
+      con la finalidad de realizar un proceso rápido y automatizado. Sigamos los
+      siguientes pasos: <br />
+      1. Si usted es nuevo en la catequesis y va al primer nivel de INICIACIÓN,
+      aplaste el primer botón que se muestra en la parte de abajo <br />
+      2.- Si usted va a los otros niveles superiores, ya estuvo en la catequesis
+      previamente, con el número de cédula realiza su matrícula aplastando en el
+      segundo Botón, que se habilitará previamente de acuerdo al día de
+      matrícula.
+    </p>
+    <!-- <h6 class="text-danger">Iniciación, Reconciliación, Eucaristía, Año Bíblico, R.P.B.(Renovación de Promesas Bautismales), y Confirmación </h6> -->
+    <h4 class="text-danger">Los Horarios de Matriculación son:</h4>
+    <p>
+      Iniciación: 25, 26 y 27 de Agosto <br />
+      Reconciliación: 27 y 28 de Agosto <br />
+      Eucaristía: 29 y 30 de Agosto <br />Año Bíblico: 31 de Agosto y 01 de
+      Septiembre <br />R.P.B.(Renovación de Promesas Bautismales): 02 y 03 de
+      Septiembre <br />Confirmación: 04 y 05 de Septiembre
+    </p>
+  </div>
+  <div class="contenedor">
+    <br />
+    <button
+      (click)="verifyActiveLevels()"
+      class="service-items float-contenedor texto-centro"
+    >
+      <img
+        src="../assets/images/level-form-selection/registration_icon.png"
+        class="img-responsive"
+      />
+      <h3>Inscripciones para Iniciación</h3>
+    </button>
+    <button
+      [routerLink]="['/registration-form']"
+      class="service-items float-contenedor texto-centro"
+    >
+      <img
+        src="../assets/images/level-form-selection/enrollment_icon.png"
+        class="img-responsive"
+      />
+      <h3>Matrículas niveles superiores</h3>
+    </button>
     <div class="limpieza"></div>
+  </div>
+  <div class="limpieza"></div>
 </section>
 <app-footer-component></app-footer-component>
 
 <!-- data-bs-toggle="modal" data-bs-target="#exampleModal -->
 <!-- Modal provisional para el acceso -->
-<div class="modal fade" id="exampleModal"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header" style="background-color: #0F79B9; color: white;">
-          <h5 class="modal-title" id="exampleModalLabel" style="font-weight: bold; font-size: x-large;">Validación de los datos de matrícula</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"  (click)="reset_Form()"></button>
-        </div>
-        <div class="modal-body">
-            <form [formGroup]="FormIdentitynumber" >
-                <div class="col-sm-12">
-                    <label>Ingrese el número de cédula del alumno </label><br><br>
-                    <input type="tel" class="form-control" formControlName="identityNumber" id="numcedula" placeholder="Ingrese el Número de Cédula" name="identityNumber" [ngClass]="{'is-invalid':FormIdentitynumber.get('identityNumber')?.errors && FormIdentitynumber.get('identityNumber')?.touched}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="10">
-                    <div *ngIf="FormIdentitynumber.get('identityNumber')?.errors">
-                        <div class="text-danger" *ngIf="FormIdentitynumber.get('identityNumber')?.hasError('required') && FormIdentitynumber.get('identityNumber')?.touched">Ingrese un número de cédula válido</div>
-                        <div class="text-danger" *ngIf="FormIdentitynumber.get('identityNumber')?.hasError('maxLength')">Se debe llenar 10 dígitos</div>
-                        <div class="text-danger" *ngIf="FormIdentitynumber.get('identityNumber')?.hasError('minLength')">Se debe llenar 10 dígitos</div>
-                    </div>
+<div
+  class="modal fade"
+  id="exampleModal"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #0f79b9; color: white">
+        <h5
+          class="modal-title"
+          id="exampleModalLabel"
+          style="font-weight: bold; font-size: x-large"
+        >
+          Validación de los datos de matrícula
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          (click)="reset_Form()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="FormIdentitynumber">
+          <div class="col-sm-12">
+            <label>Ingrese el número de cédula del alumno </label><br /><br />
+            <input
+              type="tel"
+              class="form-control"
+              formControlName="identityNumber"
+              id="numcedula"
+              placeholder="Ingrese el Número de Cédula"
+              name="identityNumber"
+              [ngClass]="{
+                'is-invalid':
+                  FormIdentitynumber.get('identityNumber')?.errors &&
+                  FormIdentitynumber.get('identityNumber')?.touched
+              }"
+              oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              maxlength="10"
+            />
+            <div *ngIf="FormIdentitynumber.get('identityNumber')?.errors">
+              <div
+                class="text-danger"
+                *ngIf="
+                  FormIdentitynumber.get('identityNumber')?.hasError(
+                    'required'
+                  ) && FormIdentitynumber.get('identityNumber')?.touched
+                "
+              >
+                Ingrese un número de cédula válido
+              </div>
+              <div
+                class="text-danger"
+                *ngIf="
+                  FormIdentitynumber.get('identityNumber')?.hasError(
+                    'maxLength'
+                  )
+                "
+              >
+                Se debe llenar 10 dígitos
+              </div>
+              <div
+                class="text-danger"
+                *ngIf="
+                  FormIdentitynumber.get('identityNumber')?.hasError(
+                    'minLength'
+                  )
+                "
+              >
+                Se debe llenar 10 dígitos
+              </div>
             </div>
-            </form> 
-        </div>
-        <div class="modal-footer">
-            <button [disabled]="FormIdentitynumber.invalid" type="submit" class="btn btn-success"  data-bs-dismiss="modal">Validar datos</button>
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="reset_Form()">Cancelar</button>
-        </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          [disabled]="FormIdentitynumber.invalid"
+          type="submit"
+          class="btn btn-success"
+          data-bs-dismiss="modal"
+        >
+          Validar datos
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          data-bs-dismiss="modal"
+          (click)="reset_Form()"
+        >
+          Cancelar
+        </button>
       </div>
     </div>
   </div>
+</div>

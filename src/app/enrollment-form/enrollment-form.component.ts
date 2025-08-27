@@ -30,6 +30,7 @@ PDF.vfs = PDF_Fonts.pdfMake.vfs;
 export class EnrollmentFormComponent implements OnInit {
   student: dataStudent = {};
   courseId: number = 0;
+  institutionId: number = 0;
   pipe = new DatePipe('en-US');
   fecha = null;
   datos_of_students: any;
@@ -67,58 +68,107 @@ export class EnrollmentFormComponent implements OnInit {
   ngOnInit() {
     this.activateRoute.params.subscribe((params) => {
       console.log(parseInt(params['id']));
-      this.courseId = parseInt(params['id']);
+      this.institutionId = parseInt(params['id']);
     });
   }
 
+  // async registrar(values: any) {
+  //   this.student = values;
+  //   this.student.courseId = this.courseId;
+  //   console.log(this.student);
+
+  //   const resp = await this._apiService.enrollemnt(this.student);
+  //   if (resp === undefined) {
+  //     const myTimeout = setTimeout(() => {
+  //       this.router.navigate(['/home']);
+  //     }, 6000);
+  //     myTimeout;
+  //   }
+
+  //   console.log(resp);
+  //   this.datos_of_students = resp.data.enrolledStudent;
+  //   this.qrCode = resp.data.qrCode;
+
+  //   // console.log(this.datos_of_students);
+  //   if (resp) {
+  //     const myTimeout = setTimeout(() => {
+  //       Swal.fire({
+  //         text:
+  //           'Estimada/o' +
+  //           ' ' +
+  //           this.student.name +
+  //           ' ' +
+  //           this.student.lastName +
+  //           ' ' +
+  //           'se han registrado tus datos. Puedes tomar captura del cógido QR para que tengas tu comprobante de matrícula y puedas revisar toda tu información. A continuación, descarga tu Acta de Compromiso.',
+  //         imageUrl: resp.data.qrCode,
+  //         imageWidth: 200,
+  //         imageHeight: 200,
+  //         imageAlt: 'Custom image',
+  //         confirmButtonText: 'Descargar Acta de Compromiso',
+  //         confirmButtonColor: '#1D71B8',
+  //       }).then((result) => {
+  //         if (result.isConfirmed) {
+  //           this.formattedDate = this.formatUpdatedAt(
+  //             this.datos_of_students.updatedAt
+  //           );
+  //           this.createPDF(false);
+  //           localStorage.clear();
+  //           this.router.navigate(['/home']);
+  //         }
+  //       });
+  //     }, 1000);
+  //     myTimeout;
+  //   } else {
+  //     this.router.navigate(['/home']);
+  //   }
+  // }
+
   async registrar(values: any) {
-    this.student = values;
-    this.student.courseId = this.courseId;
-    console.log(this.student);
+    const levelOrder = parseInt(
+      localStorage.getItem('nivel_habilitado') || '1',
+      10
+    );
 
-    const resp = await this._apiService.enrollemnt(this.student);
-    if (resp === undefined) {
-      const myTimeout = setTimeout(() => {
-        this.router.navigate(['/home']);
-      }, 6000);
-      myTimeout;
-    }
+    const payload = {
+      ...values,
+      institutionId: this.institutionId,
+      levelOrder,
+    };
 
-    console.log(resp);
-    this.datos_of_students = resp.data.enrolledStudent;
-    this.qrCode = resp.data.qrCode;
+    try {
+      const resp = await this._apiService.auto_enrollment(payload);
+      this.datos_of_students = resp.data.enrolledStudent;
+      this.qrCode = resp.data.qrCode;
 
-    // console.log(this.datos_of_students);
-    if (resp) {
-      const myTimeout = setTimeout(() => {
-        Swal.fire({
-          text:
-            'Estimada/o' +
-            ' ' +
-            this.student.name +
-            ' ' +
-            this.student.lastName +
-            ' ' +
-            'se han registrado tus datos. Puedes tomar captura del cógido QR para que tengas tu comprobante de matrícula y puedas revisar toda tu información. A continuación, descarga tu Acta de Compromiso.',
-          imageUrl: resp.data.qrCode,
-          imageWidth: 200,
-          imageHeight: 200,
-          imageAlt: 'Custom image',
-          confirmButtonText: 'Descargar Acta de Compromiso',
-          confirmButtonColor: '#1D71B8',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.formattedDate = this.formatUpdatedAt(
-              this.datos_of_students.updatedAt
-            );
-            this.createPDF(false);
-            localStorage.clear();
-            this.router.navigate(['/home']);
-          }
-        });
-      }, 1000);
-      myTimeout;
-    } else {
+      Swal.fire({
+        text:
+          'Estimada/o ' +
+          payload.name +
+          ' ' +
+          payload.lastName +
+          ', se han registrado tus datos. Puedes tomar captura del código QR como comprobante de matrícula. A continuación, descarga tu Acta de Compromiso.',
+        imageUrl: this.qrCode,
+        imageWidth: 200,
+        imageHeight: 200,
+        imageAlt: 'Código QR',
+        confirmButtonText: 'Descargar Acta de Compromiso',
+        confirmButtonColor: '#1D71B8',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.formattedDate = this.formatUpdatedAt(
+            this.datos_of_students.updatedAt
+          );
+          this.createPDF(false); // 📄 Tu función actual de PDF
+          localStorage.clear();
+          this.router.navigate(['/home']);
+        }
+      });
+    } catch (error: any) {
+      const mensaje =
+        error?.error?.message ||
+        'Hubo un problema al registrar tus datos. Por favor, intenta más tarde.';
+      Swal.fire('Error', mensaje, 'error');
       this.router.navigate(['/home']);
     }
   }

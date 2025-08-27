@@ -1,0 +1,63 @@
+<app-header-component></app-header-component>
+<section class="course">
+  <div class="letras">
+    <h1 class="titulo">Matriculación</h1>
+  </div>
+  <br />
+  <div class="letras indicaciones">
+    <p>
+      A continuación escoge la institución a la que perteneces o la catequesis
+      parroquial, ten en cuenta que solo se puede escoger una de estas
+      Instituciones Educativas si eres alumno matriculado en las mismas. Esta
+      información es corroborada con las instituciones en mención, ¡Evitemos
+      inconvenientes!.
+    </p>
+  </div>
+
+  <div class="contenedor">
+    <br />
+    <div class="formulario">
+      <div class="container mt-2">
+        <div class="mb-3 d-flex flex-column align-items-center text-center">
+          <p class="mx-3">
+            Seleccione una opción de institución y luego en el botón de
+            ¡inscribirme!, se verificará los cupos disponibles.
+          </p>
+          <h3>¡Ten en cuenta los horarios de este nivel!</h3>
+          <h6>Catequesis Parroquial - Sábado 07:30 a 09:30</h6>
+          <h6>Federico Froebel - organizado con la institución</h6>
+          <h6>Británico los Andes - organizado con la institución</h6>
+        </div>
+        <div class="mb-3 d-flex justify-content-center">
+          <select
+            class="form-select text-center"
+            id="institutionSelect"
+            [(ngModel)]="selectedInstitution"
+            style="max-width: 300px"
+          >
+            <option [ngValue]="null" disabled selected>
+              - Escoger una institución -
+            </option>
+            <option *ngFor="let inst of institutions" [ngValue]="inst">
+              {{ inst.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Botón de consulta -->
+        <div class="mb-3 d-flex justify-content-center">
+          <button
+            class="btn btn-outline-primary"
+            (click)="getAvailableCourses()"
+          >
+            ¡Inscribirme!
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="limpieza"></div>
+  </div>
+</section>
+
+<app-footer-component></app-footer-component>

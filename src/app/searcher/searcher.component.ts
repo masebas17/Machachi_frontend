@@ -164,19 +164,19 @@ export class SearcherComponent implements OnInit {
     return '';
   }
 
-  generatePDF(){
-    if(this.datos_of_students.Course.Schedule.period !== '2024'){
+  generatePDF() {
+    if (this.datos_of_students.Course.Schedule.period !== '2025') {
       Swal.fire({
         icon: 'info',
-        text: 'No registra una matricula en este periodo 2024-2025, no puede generar el Acta de Compromiso. Debe acercarse a las oficinas del Despacho Parroquial.',
-        confirmButtonColor: '#1D71B8'
+        text: 'No registra una matricula en este periodo 2025-2026, no puede generar el Acta de Compromiso. Debe acercarse a las oficinas del Despacho Parroquial.',
+        confirmButtonColor: '#1D71B8',
       }).then((result) => {
         if (result.isConfirmed) {
-          this.router.navigate(['/home'])
+          this.router.navigate(['/home']);
         }
-      })
-    }else {
-      this.createPDF(true)
+      });
+    } else {
+      this.createPDF(true);
     }
   }
 
