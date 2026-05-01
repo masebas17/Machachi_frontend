@@ -1,96 +1,147 @@
 <section class="Formulario">
   <div class="letras">
-      <h1 class="titulo">Edición de Asistencia</h1>
-      <h5 *ngIf="name_level">{{'Nivel: ' + name_level + ' '+'-'+ ' ' + 'Paralelo'+ ' ' + name_course}}</h5>
+    <h1 class="titulo">Edición de Asistencia</h1>
+    <h5 *ngIf="name_level">
+      {{
+        "Nivel: " +
+          name_level +
+          " " +
+          "-" +
+          " " +
+          "Paralelo" +
+          " " +
+          name_course
+      }}
+    </h5>
   </div>
-  <br>
+  <br />
   <div class="contenedor">
-      <div class="row">
-          <!-- <div class="col-sm-4">
+    <div class="row">
+      <!-- <div class="col-sm-4">
               <label for="">Escoger el curso:</label>
               <select class="form-select" aria-label="Default select example" name="Level" [(ngModel)]="opcionSeleccionada" (change)="capturar()">
-                  <option *ngFor="let courses of mycourses"  [ngValue]="courses.id">{{courses.Schedule.Level.name + ' ' + '-' + ' ' + 'Paralelo' + ' ' + courses.name }}</option> 
+                  <option *ngFor="let courses of mycourses"  [ngValue]="courses.id">{{getLevelName(courses.levelId) + ' ' + '-' + ' ' + 'Paralelo' + ' ' + courses.name }}</option> 
               </select>
           </div> -->
-          <div class="col-sm-4">
-               <label for="">Fecha de edición:</label> <br>
-              <div class="input-group">
-                <input
-                class="form-control"
-                [placeholder]= "edit_date"
-                name="dp"
-                [(ngModel)]="model"
-                ngbDatepicker
-                [markDisabled]="isWeekend"
-                [minDate]="{year: 2023, month: 10, day: 07}"
-                [maxDate]="{year: 2024, month: 05, day: 26}"
-                [readonly]="true"
-                #d="ngbDatepicker"
-              />
-                <!-- <button class="btn btn-secondary bi bi-calendar3" style="width: 50px;" (click)="d.toggle()" type="button"><fa-icon [icon]="faCalendarDays"></fa-icon></button> -->
-              </div>
-          </div> 
-          <div class="col-sm-8">
-            <div class="botones">
-              <!-- <button class="btn btn-success" *ngIf="mostrarBotonseleccionar" (click)="seleccionarTodos()"> <fa-icon [icon]="faListCheck"></fa-icon> Marcar a todos</button> 
+      <div class="col-sm-4">
+        <label for="">Fecha de edición:</label> <br />
+        <div class="input-group">
+          <input
+            class="form-control"
+            [placeholder]="edit_date"
+            name="dp"
+            [(ngModel)]="model"
+            ngbDatepicker
+            [markDisabled]="isWeekend"
+            [minDate]="{ year: 2023, month: 10, day: 07 }"
+            [maxDate]="{ year: 2024, month: 05, day: 26 }"
+            [readonly]="true"
+            #d="ngbDatepicker"
+          />
+          <!-- <button class="btn btn-secondary bi bi-calendar3" style="width: 50px;" (click)="d.toggle()" type="button"><fa-icon [icon]="faCalendarDays"></fa-icon></button> -->
+        </div>
+      </div>
+      <div class="col-sm-8">
+        <div class="botones">
+          <!-- <button class="btn btn-success" *ngIf="mostrarBotonseleccionar" (click)="seleccionarTodos()"> <fa-icon [icon]="faListCheck"></fa-icon> Marcar a todos</button> 
               <button class="btn btn-warning" *ngIf="mostrarBotondeseleccion" (click)="DesmarcarTodos()"><fa-icon [icon]="faX"></fa-icon> Desmarcar a todos</button> -->
-              <!-- <button class="btn btn-primary" type="button" class=" actions btn btn-primary " type="button" data-bs-toggle="modal"  href="#exampleModalToggle" ><fa-icon [icon]="faEdit"></fa-icon> Editar Asistencia</button>   -->
-              <button (click)="regresar($event)"  [name]="courseId" class="btn btn-outline-danger"><fa-icon [icon]="faArrowAltCircleLeft"></fa-icon> Regresar</button> 
-            </div>
-          </div>
+          <!-- <button class="btn btn-primary" type="button" class=" actions btn btn-primary " type="button" data-bs-toggle="modal"  href="#exampleModalToggle" ><fa-icon [icon]="faEdit"></fa-icon> Editar Asistencia</button>   -->
+          <button
+            (click)="regresar($event)"
+            [name]="courseId"
+            class="btn btn-outline-danger"
+          >
+            <fa-icon [icon]="faArrowAltCircleLeft"></fa-icon> Regresar
+          </button>
+        </div>
       </div>
-</div> 
-      <div class="row">
-          <div class="col-sm-11">
-              <div class="table-responsive">    
-                  <table class="table table-hover">
-                    <thead class="table-secondary">
-                      <tr class = "text-center">
-                        <th scope="col">Ord</th>
-                        <th>Alumno</th>
-                        <th>Asistencia</th>
-                        <!-- <th>Falta</th>  -->
-                        <th>Justificación</th>  
-                        <th>Observación</th>  
-                        <th>Acciones</th>  
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let student of students; let item = index">
-                        <td scope="row" class = "text-center">{{item+1}}</td>
-                        <td>{{student.lastName + ' ' + student.name | uppercase}}</td>
-                        <td class="text-center">
-                          <label>
-                            <input type="checkbox" class="form-check-input" value="alumno.value"  [checked]="checkboxDeberiaEstarMarcado(student.id)"  [name]="student.id" (change)="toggleAsistencia(student.id)" >
-                            Asistencia
-                          </label>
-                        </td>
-                         <td class="text-center">
-                          <label>
-                            <input type="checkbox" class="form-check-input" value="justify"  [checked]="checkboxjustification(student.id).isJustified" (change)="toggleJustification(student.id)">
-                            Justificación
-                          </label>
-                        </td>    
-                        <td class="text-center">
-                          <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" [disabled]="!textareaEnabled[student.id]" [placeholder]="checkboxjustification(student.id).observation || 'No hay observaciones'" [maxLength]="300" [(ngModel)]="student.observation"></textarea>
-                        </td>  
-                        <td>
-                          <button class="form-control btn btn-success" [disabled]="!textareaEnabled[student.id]" (click)="Justification(student.id, student.observation)">Guardar observación</button>
-                        </td>               
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-          </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-11">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-secondary">
+            <tr class="text-center">
+              <th scope="col">Ord</th>
+              <th>Alumno</th>
+              <th>Asistencia</th>
+              <!-- <th>Falta</th>  -->
+              <th>Justificación</th>
+              <th>Observación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of students; let item = index">
+              <td scope="row" class="text-center">{{ item + 1 }}</td>
+              <td>{{ student.lastName + " " + student.name | uppercase }}</td>
+              <td class="text-center">
+                <label>
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    value="alumno.value"
+                    [checked]="checkboxDeberiaEstarMarcado(student.id)"
+                    [name]="student.id"
+                    (change)="toggleAsistencia(student.id)"
+                  />
+                  Asistencia
+                </label>
+              </td>
+              <td class="text-center">
+                <label>
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    value="justify"
+                    [checked]="checkboxjustification(student.id).isJustified"
+                    (change)="toggleJustification(student.id)"
+                  />
+                  Justificación
+                </label>
+              </td>
+              <td class="text-center">
+                <textarea
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="2"
+                  [disabled]="!textareaEnabled[student.id]"
+                  [placeholder]="
+                    checkboxjustification(student.id).observation ||
+                    'No hay observaciones'
+                  "
+                  maxlength="80"
+                  [(ngModel)]="student.observation"
+                  (input)="truncateObservation(student)"
+                ></textarea>
+              </td>
+              <td>
+                <button
+                  class="form-control btn btn-success"
+                  [disabled]="
+                    !textareaEnabled[student.id] ||
+                    student.observation?.length > 80
+                  "
+                  (click)="Justification(student.id, student.observation)"
+                >
+                  Guardar observación
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
+  </div>
   <div class="button_save row" *ngIf="students != null">
-          <div class="botones">
-              <button class="btn btn-success" (click)="EditarAsistencia()"><fa-icon [icon]="faSave"></fa-icon> Guardar cambios totales</button> 
-              <button class="btn btn-danger" (click)="eliminar_asistencia()"><fa-icon [icon]="faTrash"></fa-icon> Eliminar Asistencia</button>
-          </div>
+    <div class="botones">
+      <button class="btn btn-success" (click)="EditarAsistencia()">
+        <fa-icon [icon]="faSave"></fa-icon> Guardar cambios totales
+      </button>
+      <button class="btn btn-danger" (click)="eliminar_asistencia()">
+        <fa-icon [icon]="faTrash"></fa-icon> Eliminar Asistencia
+      </button>
+    </div>
   </div>
 </section>
-
-
-
-

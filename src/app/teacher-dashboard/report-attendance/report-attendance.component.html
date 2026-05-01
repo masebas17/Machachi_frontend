@@ -1,82 +1,110 @@
 <section class="Formulario">
-    <div class="letras">
-        <h1 class="titulo">Reporte de asistencia por cursos</h1>
-    </div>
-    <br>
-    <div class="contenedor">
-        <div class="row">
-            <div class="col-sm-4">
-                <label for="">Escoger el curso:</label>
-                <select class="form-select" aria-label="Default select example" name="Level" [(ngModel)]="opcionSeleccionada" (change)="capturar()">
-                    <option *ngFor="let courses of mycourses"  [ngValue]="courses.id">{{courses.Schedule.Level.name + ' ' + '-' + ' ' + 'Paralelo' + ' ' + courses.name }}</option> 
-                </select>
-            </div>
-            <div class="col-sm-8">
-              <div class="botones">
-                <button class="btn btn-success" (click)="exportarReporte('print')"><fa-icon [icon]="faPrint"></fa-icon>  Imprimir Reporte</button>
-                <button class="btn btn-danger" (click)="exportarReporte('download')"><fa-icon [icon]="faFilePdf"></fa-icon>  Descargar en PDF</button>
-              </div>
-          </div>
-        </div>
-    </div> 
+  <div class="letras">
+    <h1 class="titulo">Reporte de asistencia por cursos</h1>
+  </div>
+  <br />
+  <div class="contenedor">
     <div class="row">
-        <div class="col-sm-8">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead class="table-secondary">
-                    <tr class="text-center">
-                      <th scope="col">Ord</th>
-                      <th>Alumno</th>
-                      <ng-container *ngFor="let fecha of fechasAsistencias">
-                        <th>{{ fecha }}</th>
-                      </ng-container>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let student of students; let item = index">
-                      <td scope="row" class="text-center">{{ item + 1 }}</td>
-                      <td>{{ student.lastName + ' ' + student.name | uppercase }}</td>
-                      <ng-container *ngFor="let fecha of fechasAsistencias">
-                        <td *ngIf="asistenciasPorFecha[fecha] && student && student.id" [ngStyle]="getStyles(asistenciasPorFecha[fecha][student.id])" class="text-center">{{ asistenciasPorFecha[fecha][student.id] || '' }}</td>
-                      </ng-container>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>                           
+      <div class="col-sm-4">
+        <label for="">Escoger el curso:</label>
+        <select
+          class="form-select"
+          aria-label="Default select example"
+          name="Level"
+          [(ngModel)]="opcionSeleccionada"
+          (change)="capturar()"
+        >
+          <option *ngFor="let courses of mycourses" [ngValue]="courses.id">
+            {{
+              getLevelName(courses.levelId) +
+                " " +
+                "-" +
+                " " +
+                "Paralelo" +
+                " " +
+                courses.name
+            }}
+          </option>
+        </select>
+      </div>
+      <div class="col-sm-8">
+        <div class="botones">
+          <button class="btn btn-success" (click)="exportarReporte('print')">
+            <fa-icon [icon]="faPrint"></fa-icon> Imprimir Reporte
+          </button>
+          <button class="btn btn-danger" (click)="exportarReporte('download')">
+            <fa-icon [icon]="faFilePdf"></fa-icon> Descargar en PDF
+          </button>
         </div>
+      </div>
     </div>
-    <hr>
-    
-    <h4 class="titulo">Reporte de Justificaciones</h4>
-    
-    <br>
-    <div class="row">
-        <div class="col-sm-8">
-            <div class="table-responsive">
-                <table class="table table-bordered border-secondary">
-                  <thead class="table-bordered border-secondary">
-                    <tr class="text-center">
-                      <th scope="col">Ord</th>
-                      <th>Alumno</th>
-                      <ng-container *ngFor="let fecha of justificaciones">
-                        <th>{{ fecha }}</th>
-                      </ng-container>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let student of studentsWithJustifications let item = index">
-                      <td scope="row" class="text-center">{{ item + 1 }}</td>
-                      <td>{{ student.lastName + ' ' + student.name | uppercase }}</td>
-                      <ng-container *ngFor="let fecha of justificaciones">
-                        <td>{{ observacionesPorFecha[fecha][student.id] || ''}}</td>
-                      </ng-container>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>                           
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-secondary">
+            <tr class="text-center">
+              <th scope="col">Ord</th>
+              <th>Alumno</th>
+              <ng-container *ngFor="let fecha of fechasAsistencias">
+                <th>{{ fecha }}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of students; let item = index">
+              <td scope="row" class="text-center">{{ item + 1 }}</td>
+              <td>{{ student.lastName + " " + student.name | uppercase }}</td>
+              <ng-container *ngFor="let fecha of fechasAsistencias">
+                <td
+                  *ngIf="asistenciasPorFecha[fecha] && student && student.id"
+                  [ngStyle]="getStyles(asistenciasPorFecha[fecha][student.id])"
+                  class="text-center"
+                >
+                  {{ asistenciasPorFecha[fecha][student.id] || "" }}
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
+  <hr />
+
+  <h4 class="titulo">Reporte de Justificaciones</h4>
+
+  <br />
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="table-responsive">
+        <table class="table table-bordered border-secondary">
+          <thead class="table-bordered border-secondary">
+            <tr class="text-center">
+              <th scope="col">Ord</th>
+              <th>Alumno</th>
+              <ng-container *ngFor="let fecha of justificaciones">
+                <th>{{ fecha }}</th>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let student of studentsWithJustifications;
+                let item = index
+              "
+            >
+              <td scope="row" class="text-center">{{ item + 1 }}</td>
+              <td>{{ student.lastName + " " + student.name | uppercase }}</td>
+              <ng-container *ngFor="let fecha of justificaciones">
+                <td>{{ observacionesPorFecha[fecha][student.id] || "" }}</td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </section>
-
-
-

@@ -379,112 +379,130 @@
           </div>
         </div>
         <br />
-        <hr />
-        <br />
-      </div>
-      <div class="row">
-        <div class="col-sm-2">
-          <label for="">Estado del Alumo:</label><br />
-        </div>
-        <div class="col-sm-4">
-          <div class="form-check">
-            <input
-              type="radio"
-              class="form-check-input"
-              id="aproved1"
-              [value]="true"
-              checked
-              formControlName="aproved"
-            />
-            <p>Aprobado</p>
-            <input
-              type="radio"
-              class="form-check-input"
-              id="aproved2"
-              [value]="false"
-              checked
-              formControlName="aproved"
-            />
-            <p>Reprobado</p>
-            <input
-              type="radio"
-              class="form-check-input"
-              id="aproved2"
-              [value]="null"
-              checked
-              formControlName="aproved"
-            />
-            <p>Matriculado</p>
-          </div>
-          <div *ngIf="Formstudent.get('aproved')?.errors">
-            <div
-              class="text-danger"
-              *ngIf="
-                Formstudent.get('aproved')?.hasError('required') &&
-                Formstudent.get('aproved')?.touched
-              "
-            >
-              Escoja una opción
-            </div>
-          </div>
-        </div>
       </div>
       <br />
-      <div class="row">
-        <div class="table-responsive" *ngIf="data_student != null">
-          <table class="table table-bordered table-hover">
-            <thead class="table-danger">
-              <tr class="text-center">
-                <th>Nivel Actual</th>
-                <th>Curso Actual</th>
-                <th>Último periodo registrado</th>
-                <th>Pago de Matrícula</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="text-center">
-                  {{ data_student?.Course.Schedule.Level.name }}
-                </td>
-                <td class="text-center">{{ data_student?.Course.name }}</td>
-                <td class="text-center">
-                  {{ data_student?.Course.Schedule.period }}
-                </td>
-                <td class="text-center">
-                  {{ data_student?.payment | asignated }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <br />
-      <div class="row">
-        <div class="col-sm-9">
-          <button type="submit" class="btn btn-success">
-            Registrar cambios totales
+      <div class="row mb-3">
+        <div class="col-sm-12 d-flex gap-2 flex-wrap align-items-center">
+          <!-- Botón de submit del formulario -->
+          <button type="submit" class="btn btn-success btn-sm">
+            Registrar cambios
           </button>
-          <!-- <a class="btn btn-primary">Generar Comprobante</a> -->
+
+          <!-- Botones independientes -->
+          <!-- <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="delete()"
+          >
+            Eliminar Estudiante
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+            (click)="capturar_level_curso()"
+          >
+            Cambiar de curso
+          </button> -->
+          <a href="/admin" class="btn btn-secondary btn-sm">Cancelar</a>
         </div>
-        <!-- <button type="reset" class="btn btn-danger">Salir</button> -->
       </div>
     </form>
     <br />
+    <hr />
+    <div class="row" *ngIf="dataEnrollment != null">
+      <h5 class="text-danger">
+        Modulo de actualización de Datos de Matrícula y Curso
+      </h5>
+      <br />
+      <div class="col-sm-6 my-3">
+        <label for="">Estado del Alumno:</label>
+        <div class="d-flex align-items-center">
+          <span
+            class="me-3"
+            [ngClass]="{
+              'text-success': dataEnrollment?.status === 'Aprobado',
+              'text-danger': dataEnrollment?.status === 'Reprobado',
+              'text-warning': dataEnrollment?.status === 'Matriculado'
+            }"
+          >
+            {{ dataEnrollment?.status }}
+          </span>
+
+          <select
+            class="form-select form-select-sm d-inline w-auto me-2"
+            [(ngModel)]="dataEnrollment.newStatus"
+          >
+            <option [ngValue]="null">-- escoja una opción --</option>
+            <option value="Aprobado">Aprobado</option>
+            <option value="Reprobado">Reprobado</option>
+            <option value="Matriculado">Matriculado</option>
+          </select>
+
+          <button
+            class="btn btn-primary btn-sm"
+            (click)="updateEnrollmentStatus(dataEnrollment)"
+            [disabled]="
+              !dataEnrollment.newStatus ||
+              dataEnrollment.newStatus === dataEnrollment.status
+            "
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <br />
     <div class="row">
-      <div class="col-sm-9">
-        <button class="btn btn-danger" (click)="delete()">
-          Eliminar Estudiante
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-          (click)="capturar_level_curso()"
-        >
-          Cambiar de curso
-        </button>
-        <a type="reset" href="/admin" class="btn btn-secondary">Cancelar</a>
+      <div class="table-responsive" *ngIf="data_student != null">
+        <table class="table table-bordered table-hover">
+          <thead class="table-danger">
+            <tr class="text-center">
+              <th>Institución</th>
+              <th>Nivel Actual</th>
+              <th>Curso Actual</th>
+              <th>Último periodo registrado</th>
+              <th>Pago de Matrícula</th>
+              <th>opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-center">
+                {{ dataEnrollment?.Course?.Institution?.name ?? "No definido" }}
+              </td>
+              <td class="text-center">
+                {{ dataEnrollment?.Course?.Level?.name ?? "No definido" }}
+              </td>
+              <td class="text-center">
+                {{
+                  "Paralelo " +
+                    dataEnrollment?.Course?.name +
+                    " - " +
+                    this.scheduleName
+                }}
+              </td>
+              <td class="text-center">
+                {{ dataEnrollment?.Course?.Schedule?.period ?? "No definido" }}
+              </td>
+              <td class="text-center">
+                {{ data_student?.payment | asignated }}
+              </td>
+              <td class="text-center">
+                <button
+                  class="btn btn-primary btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  (click)="capturar_level_curso()"
+                >
+                  Actualizar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -504,7 +522,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">
-          Cambio de Nivel y Paralelo
+          Cambio de institución horario nivel y curso
         </h5>
         <button
           type="button"
@@ -514,6 +532,16 @@
         ></button>
       </div>
       <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-6">
+            <label>Institución Actual: </label><br /><label
+              id="Text_Institution"
+              textWrap="true"
+              class="text-danger"
+              ><strong></strong
+            ></label>
+          </div>
+        </div>
         <div class="row">
           <div class="col-sm-6">
             <label>Nivel Actual: </label><br /><label
@@ -535,7 +563,22 @@
         <br />
         <div class="row">
           <div class="col-sm-6">
-            <label for="">Escoger el nuevo Nivel:</label>
+            <label for="">Escoger el periodo:</label>
+            <select
+              class="form-select"
+              aria-label="Default select example"
+              name="Level"
+              [(ngModel)]="periodOption"
+              (change)="capturar_periodo()"
+            >
+              <option value="2025">2025</option>
+            </select>
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-sm-6">
+            <label for="">Escoger Horario:</label>
             <select
               class="form-select"
               aria-label="Default select example"
@@ -543,58 +586,60 @@
               [(ngModel)]="opcionSeleccionada"
               (change)="capturar()"
             >
-              <option selected>-- Escoja un Nivel --</option>
-              <ng-container
-                *ngFor="let periodGroup of groupByPeriod(shedules.data)"
+              <option selected>-- Escoja un Horario --</option>
+              <option
+                *ngFor="let shedule of shedules.data"
+                [ngValue]="shedule.id"
               >
-                <optgroup [label]="periodGroup.period">
-                  <option
-                    *ngFor="let shedule of periodGroup.shedules"
-                    [ngValue]="shedule.id"
-                  >
-                    {{
-                      shedule.Level.name +
-                        " " +
-                        "(" +
-                        shedule.weekDay +
-                        " " +
-                        shedule.startTime +
-                        " a " +
-                        shedule.endTime +
-                        ")"
-                    }}
-                  </option>
-                </optgroup>
-              </ng-container>
+                {{
+                  shedule.weekDay +
+                    " " +
+                    shedule.startTime +
+                    " " +
+                    "a" +
+                    " " +
+                    shedule.endTime
+                }}
+              </option>
             </select>
           </div>
           <div class="col-sm-6">
-            <label for="">Escoger el nuevo curso:</label>
+            <label for="">Escoger el paralelo:</label>
             <select
               class="form-select"
               aria-label="Default select example"
               name="course"
               [(ngModel)]="seleccion_curso"
-              (change)="capturar_curso()"
+              (ngModelChange)="capturar_curso()"
             >
-              <option selected>-- Escoja un Curso --</option>
-              <ng-container *ngFor="let course_selection of courses">
-                <option
-                  *ngIf="course_selection.count < course_selection.maxStudents"
-                  [ngValue]="course_selection.id"
-                >
-                  {{ "Paralelo" + " " + course_selection.name }}
-                </option>
-              </ng-container>
+              <option selected>-- Escoja un paralelo --</option>
+              <option
+                *ngFor="let course_selection of courses"
+                [ngValue]="course_selection.id"
+              >
+                {{
+                  "Paralelo" +
+                    " " +
+                    course_selection.name +
+                    " - " +
+                    course_selection.Level.name
+                }}
+              </option>
             </select>
           </div>
         </div>
+        <hr />
+        <p>
+          Al escoger un horario y paralelo se asignará automaticamente a la
+          Institución a la que pertenece ese curso.
+        </p>
+        <br />
       </div>
       <div class="modal-footer">
         <button
           type="button"
           class="btn btn-success"
-          (click)="edit_course()"
+          (click)="change_course()"
           data-bs-dismiss="modal"
         >
           Guardar

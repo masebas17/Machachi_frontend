@@ -13,13 +13,14 @@ import { ApiService } from '../services/api.service';
 })
 export class RegistrationFormComponent implements OnInit {
   datos_of_students: any;
-  current_level;
-  aux_level;
+  current_level: any;
+  aux_level: any;
   levels: any;
-  validDate;
+  validDate: any;
 
-  enrollmentStatus;
+  enrollmentStatus: any;
   dataEnrollmentStudent: any;
+  lastLevel: any;
 
   institutions: any[] = [];
   selectedInstitution: any = null;
@@ -67,94 +68,49 @@ export class RegistrationFormComponent implements OnInit {
     myTimeout;
   }
 
-  consultar() {
-    this._ApiService
-      .getStudent(this.FormIdentitynumber.get('identityNumber').value)
-      .subscribe((resp: any) => {
-        if (resp && resp.data && resp.data.student) {
-          console.log('resp', resp.data.student);
+  async consultar() {
+    try {
+      const identityNumber =
+        this.FormIdentitynumber.get('identityNumber').value;
+      const resp: any = await this._ApiService
+        .getStudent(identityNumber)
+        .toPromise();
 
-          const myTimeout = setTimeout(async () => {
-            const student = resp.data.student;
-            this.dataEnrollmentStudent = resp.data.latestEnrollment;
+      if (!resp?.data?.student) {
+        this.router.navigate(['/home']);
+        return;
+      }
 
-            const Toast = Swal.mixin({
-              toast: false,
-              position: 'center',
-              showConfirmButton: false,
-              timer: 3000,
-              timerProgressBar: true,
-            });
+      const student = resp.data.student;
+      const latestEnrollment = resp.data.latestEnrollment;
 
-            if (student.Course.Schedule.period === '2025') {
-              await Swal.fire({
-                icon: 'error',
-                text: 'El Usuario ya se encuentra matriculado',
-              });
-              this.router.navigate(['/level-form-selection']);
-              return;
-            }
+      const ok = await this.verificar_datos(student, latestEnrollment);
+      if (!ok) return;
 
-            this.verificar_datos(student);
-
-            if (!this.validDate) {
-              await Swal.fire({
-                icon: 'error',
-                title:
-                  'El Usuario no está habilitado para la matriculación en este día.',
-                text: 'Revise las fechas correspondientes',
-              });
-              this.router.navigate(['/level-form-selection']);
-              return;
-            }
-
-            // Validar si el periodo no es 2024
-            if (student.Course.Schedule.period !== '2024') {
-              await Swal.fire({
-                icon: 'error',
-                title: 'El usuario no se puede matricular.',
-                text: 'No registra matrícula en el periodo anterior 2023-2024.',
-                footer: 'Nota: Debe acercarse al Despacho Parroquial',
-              });
-              window.location.reload();
-              return;
-            }
-
-            // Validar si el usuario está aprobado
-            if (this.enrollmentStatus === 'Reprobado') {
-              await Swal.fire({
-                icon: 'error',
-                text: 'El usuario registra nivel REPROBADO, no tiene permitido matricularse.',
-                footer: 'Nota: Debe acercarse al Despacho parroquial',
-              });
-              window.location.reload();
-              return;
-            }
-
-            // Si todas las validaciones son correctas
-            await Toast.fire({
-              icon: 'success',
-              title: 'Datos del Estudiante encontrados',
-              text: 'Verificando el estado de matriculación',
-            });
-
-            this.datos_of_students = student;
-
-            console.log(this.datos_of_students);
-          }, 500);
-          myTimeout;
-        } else {
-          this.router.navigate(['/home']);
-        }
+      await Swal.fire({
+        icon: 'success',
+        title: 'Datos del Estudiante encontrados',
+        text: 'Verificando el estado de matriculación',
+        timer: 2000,
+        showConfirmButton: false,
       });
+
+      this.datos_of_students = student;
+    } catch (error) {
+      console.error(error);
+      await Swal.fire({
+        icon: 'error',
+        text: 'Error consultando datos del estudiante',
+      });
+    }
   }
 
-  getShedule() {
-    this._ApiService.getShedulebyYear().subscribe((resp: any) => {
-      console.log(resp), (this.levels = resp.data);
-      console.log('levels', this.levels);
-    });
-  }
+  // getShedule() {
+  //   this._ApiService.getShedulebyYear().subscribe((resp: any) => {
+  //     console.log(resp), (this.levels = resp.data);
+  //     console.log('levels', this.levels);
+  //   });
+  // }
 
   getActiveEnrollmentLevels() {
     this._ApiService.getActiveEnrollmentLevels().subscribe((resp: any) => {
@@ -163,56 +119,120 @@ export class RegistrationFormComponent implements OnInit {
     });
   }
 
-  verificar_datos(datos_of_students: any) {
-    this.enrollmentStatus = this.dataEnrollmentStudent.status;
+  async verificar_datos(student: any, latestEnrollment: any): Promise<boolean> {
+    this.enrollmentStatus = latestEnrollment?.status;
+    this.dataEnrollmentStudent = latestEnrollment;
+    this.lastLevel = latestEnrollment?.Course?.Level;
 
+    // 1) Ya matriculado 2025
+    if (student?.Course?.Schedule?.period === '2025') {
+      await Swal.fire({
+        icon: 'error',
+        text: 'El Usuario ya se encuentra matriculado',
+      });
+      this.router.navigate(['/level-form-selection']);
+      return false;
+    }
+
+    // 2) Reprobado
+    if (this.enrollmentStatus === 'Reprobado') {
+      await Swal.fire({
+        icon: 'error',
+        text: 'El usuario registra nivel REPROBADO, no tiene permitido matricularse.',
+        footer: 'Nota: Debe acercarse al Despacho parroquial',
+      });
+      window.location.reload();
+      return false;
+    }
+
+    // 3) No Aprobado
     if (this.enrollmentStatus !== 'Aprobado') {
-      Swal.fire({
+      await Swal.fire({
         icon: 'error',
         text: 'El usuario no puede matricularse porque no ha aprobado el último nivel.',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['/level-form-selection']);
-        }
       });
-      return;
+      this.router.navigate(['/level-form-selection']);
+      return false;
     }
 
-    const auxlevel = this.levels.find(
-      (level_order) =>
-        level_order.order === datos_of_students.Course.Level.order + 1
-    );
-
-    if (auxlevel) {
-      console.log('Objeto encontrado:', auxlevel);
-      this.current_level = auxlevel;
-    }
-
-    if (!auxlevel) {
-      Swal.fire({
+    // 4) Sin último nivel
+    if (!this.lastLevel) {
+      await Swal.fire({
         icon: 'error',
-        text: 'El Usuario no puede matricularse porque el último nivel aprobado es CONFIRMACION, ya terminó la catequesis',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['/level-form-selection']);
-        }
+        text: 'No se encontró el último nivel del alumno.',
       });
+      this.router.navigate(['/level-form-selection']);
+      return false;
     }
 
-    const auxDate = new Date();
-
-    // console.log(auxDate)
-    // console.log(new Date(this.current_level.Level.enrollmentStart))
-    // console.log(new Date(this.current_level.Level.enrollmentEnd))
-
-    if (
-      auxDate >= new Date(this.current_level.enrollmentStart) &&
-      auxDate <= new Date(this.current_level.enrollmentEnd)
-    ) {
-      this.validDate = true;
-    } else {
-      this.validDate = false;
+    // 5) Fin de catequesis
+    if (this.lastLevel?.order === 6) {
+      await Swal.fire({
+        icon: 'error',
+        text: 'El Usuario no puede matricularse porque el último nivel aprobado es CONFIRMACION, ya terminó la catequesis.',
+      });
+      this.router.navigate(['/level-form-selection']);
+      return false;
     }
+
+    // 6) Periodo previo debe ser 2024
+    if (student?.Course?.Schedule?.period !== '2024') {
+      await Swal.fire({
+        icon: 'error',
+        title: 'El usuario no se puede matricular.',
+        text: 'No registra matrícula en el periodo anterior 2024-2025.',
+        footer: 'Nota: Debe acercarse al Despacho Parroquial',
+      });
+      window.location.reload();
+      return false;
+    }
+
+    // 7) Siguiente nivel (order + 1) entre los habilitados hoy
+    const currentOrder = Number(this.lastLevel?.order);
+    const nextLevel =
+      this.levels?.find(
+        (lvl: any) => Number(lvl?.order) === currentOrder + 1
+      ) || null;
+
+    if (!nextLevel) {
+      await Swal.fire({
+        icon: 'warning',
+        text: 'No esta habilitado para la matrícula en este día; Revisar las fechas correspondientes.',
+      });
+      this.router.navigate(['/level-form-selection']);
+      return false;
+    }
+
+    // 8) Ventana de matrícula
+    const now = new Date();
+    const start = new Date(nextLevel.enrollmentStart);
+    const end = new Date(nextLevel.enrollmentEnd);
+
+    if (Number.isNaN(start.valueOf()) || Number.isNaN(end.valueOf())) {
+      await Swal.fire({
+        icon: 'error',
+        text: 'Las fechas de matrícula del nivel seleccionado no son válidas.',
+      });
+      this.router.navigate(['/level-form-selection']);
+      return false;
+    }
+
+    const validDate = now >= start && now <= end;
+    if (!validDate) {
+      await Swal.fire({
+        icon: 'error',
+        title:
+          'El Usuario no está habilitado para la matriculación en este día.',
+        text: 'Revise las fechas correspondientes',
+      });
+      this.router.navigate(['/level-form-selection']);
+      return false;
+    }
+
+    // OK
+    this.validDate = true;
+    this.current_level = nextLevel;
+    return true;
   }
 
   consult_courses(event: any) {
@@ -235,7 +255,6 @@ export class RegistrationFormComponent implements OnInit {
     this._ApiService.getInstitutions().subscribe(
       (resp: any) => {
         this.institutions = resp.data;
-        console.log('Instituciones cargadas:', this.institutions);
       },
       (error) => {
         console.error('Error al obtener instituciones:', error);
@@ -245,8 +264,6 @@ export class RegistrationFormComponent implements OnInit {
   }
 
   onInstitutionSelect() {
-    console.log('level', this.current_level);
-
     const storedLevelOrder = this.current_level.order;
 
     if (!this.selectedInstitution) {

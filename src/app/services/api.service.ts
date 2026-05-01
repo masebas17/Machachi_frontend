@@ -48,19 +48,19 @@ export class ApiService {
     const currentDate: Date = new Date();
     return this.http.post<datashedule[]>(
       `${this.apiUrl}/api/schedules/enrollment/2025`,
-      { currentDate }
+      { currentDate },
     );
   }
 
   getShedulebyYear(): Observable<datasheduleYear[]> {
     return this.http.get<datasheduleYear[]>(
-      `${this.apiUrl}/api/schedules/2025`
+      `${this.apiUrl}/api/schedules/2025`,
     );
   }
 
   getCourses(id: any): Observable<datacourses[]> {
     return this.http.get<datacourses[]>(
-      `${this.apiUrl}/api/courses/schedule/` + id
+      `${this.apiUrl}/api/courses/schedule/` + id,
     );
   }
   getcourse(): Observable<datacourses[]> {
@@ -69,7 +69,7 @@ export class ApiService {
 
   getCoursebyId(id: number): Observable<{ data: datacourses }> {
     return this.http.get<{ data: datacourses }>(
-      `${this.apiUrl}/api/courses/${id}`
+      `${this.apiUrl}/api/courses/${id}`,
     );
   }
 
@@ -314,7 +314,7 @@ export class ApiService {
   async Update_Assistance(
     id: any,
     date: any,
-    update_assistance: update_assistance
+    update_assistance: update_assistance,
   ) {
     const options = {
       headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
@@ -323,7 +323,7 @@ export class ApiService {
       .put(
         `${this.apiUrl}/api/assistance/courseId/${id}/date/${date}`,
         update_assistance,
-        options
+        options,
       )
       .toPromise();
     return resp;
@@ -336,7 +336,7 @@ export class ApiService {
     const resp: any = await this.http
       .delete(
         `${this.apiUrl}/api/assistance/courseId/${id}/date/${date}`,
-        options
+        options,
       )
       .toPromise();
     return resp;
@@ -364,7 +364,7 @@ export class ApiService {
 
   updateEnrollmentsByCourse(
     courseId: number,
-    payload: EnrollmentApprovalPayload
+    payload: EnrollmentApprovalPayload,
   ): Observable<any> {
     const options = {
       headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
@@ -373,14 +373,14 @@ export class ApiService {
     return this.http.patch(
       `${this.apiUrl}/api/enrollments/course/${courseId}`,
       payload,
-      options
+      options,
     );
   }
 
   verifyCertificate(hash: string): Promise<CertificateVerificationResponse> {
     return this.http
       .get<CertificateVerificationResponse>(
-        `${this.apiUrl}/api/enrollments/verify/${hash}`
+        `${this.apiUrl}/api/enrollments/verify/${hash}`,
       )
       .toPromise();
   }
@@ -393,7 +393,7 @@ export class ApiService {
     return this.http.patch(
       `${this.apiUrl}/api/enrollments/${id}`,
       payload,
-      options
+      options,
     );
   }
 
@@ -425,7 +425,7 @@ export class ApiService {
   getAvailableCourses(institutionId: number, levelOrder: number): Promise<any> {
     return this.http
       .get(
-        `${this.apiUrl}/api/courses/available/${institutionId}/${levelOrder}`
+        `${this.apiUrl}/api/courses/available/${institutionId}/${levelOrder}`,
       )
       .toPromise();
   }
@@ -453,6 +453,21 @@ export class ApiService {
 
     const resp: any = await this.http
       .post(`${this.apiUrl}/api/students/admin-enroll`, Student, options)
+      .toPromise();
+    return resp;
+  }
+
+  async updateAndenrollmentAdmin(studentId: number, Student: any) {
+    const options = {
+      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
+    };
+
+    const resp: any = await this.http
+      .put(
+        `${this.apiUrl}/api/students/${studentId}/update-enrollment-admin`,
+        Student,
+        options,
+      )
       .toPromise();
     return resp;
   }

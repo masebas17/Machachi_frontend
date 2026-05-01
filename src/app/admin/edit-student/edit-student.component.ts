@@ -7,6 +7,7 @@ import { dataStudent } from 'src/app/shared/interfaces';
 import Swal from 'sweetalert2';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { ToastrService } from 'ngx-toastr';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -30,8 +31,19 @@ export class EditStudentComponent implements OnInit {
   fecha = null;
   Course_id: number = 0;
   data_student: any;
+  scheduleName: string = '';
+  dataEnrollment: any;
+  data_courses: any;
+  periodOption: string = '';
+  Schedule_data: any;
+  institutionId: number = 0;
+  levelOrder: number = 0;
 
-  constructor(private _apiService: ApiService, private router: Router) {
+  constructor(
+    private _apiService: ApiService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {
     this.shedules = {};
     this.courses = [];
   }
@@ -81,7 +93,12 @@ export class EditStudentComponent implements OnInit {
             }).then((result) => {
               if (result.isConfirmed) {
                 this.data_student = resp.data.student;
-                console.log(this.data_student);
+                this.dataEnrollment = resp.data.latestEnrollment;
+                this.dataEnrollment.newStatus = this.dataEnrollment.status;
+                this.institutionId = this.data_student.Course?.Institution?.id;
+                this.scheduleName = `${this.dataEnrollment?.Course.Schedule.weekDay} ${this.dataEnrollment?.Course.Schedule.startTime} a ${this.dataEnrollment?.Course.Schedule.endTime}`;
+                console.log('data enrollment', this.dataEnrollment);
+                console.log('data student', this.data_student);
                 this.editar();
                 this.getShedule();
               }
@@ -94,27 +111,52 @@ export class EditStudentComponent implements OnInit {
       });
   }
 
+  async capturar_periodo() {
+    const resp = await this._apiService.getschedules_from_year(
+      this.periodOption
+    );
+    console.log(resp);
+    this.shedules = resp;
+    this.Schedule_data = resp.data;
+    this.opcionSeleccionada = 0;
+    this.verSeleccion_curso = 0;
+  }
+
   capturar() {
     this.verSeleccion = this.opcionSeleccionada;
     console.log(this.verSeleccion);
     this.getcourses();
+    this.verSeleccion_curso = 0;
   }
-  capturar_curso() {
+
+  async capturar_curso() {
     this.verSeleccion_curso = this.seleccion_curso;
     console.log(this.verSeleccion_curso);
+    const resp = await this._apiService.getCourseById(this.verSeleccion_curso);
+    this.levelOrder = resp.data.Level.order;
+    this.institutionId = resp.data.institutionId;
   }
 
   async getShedule() {
-    const resp = await this._apiService.getschedules_all();
-    //console.log(resp);
+    const resp = await this._apiService.getschedules_from_admin();
+    console.log(resp);
     this.shedules = resp;
+    this.Schedule_data = resp.data;
+  }
+
+  async getcourses() {
+    const resp = await this._apiService.getCoursesbyid(this.verSeleccion);
+    this.courses = resp.data;
+    this.data_courses = resp;
+    console.log(this.data_courses);
+    this.seleccion_curso = 0;
   }
 
   groupByPeriod(shedules: any[]) {
     if (!shedules || shedules.length === 0) {
       return [];
     }
-  
+
     const grouped = shedules.reduce((acc, shedule) => {
       const period = shedule.period;
       if (!acc[period]) {
@@ -123,21 +165,11 @@ export class EditStudentComponent implements OnInit {
       acc[period].push(shedule);
       return acc;
     }, {});
-  
-    return Object.keys(grouped).map(key => ({
-      period: key,
-      shedules: grouped[key]
-    }));
-  }
-  
 
-  async getcourses() {
-    const resp = await this._apiService.getcourses_from_admin(
-      this.verSeleccion
-    );
-    //console.log(resp);
-    this.courses = resp.data;
-    this.seleccion_curso = 0;
+    return Object.keys(grouped).map((key) => ({
+      period: key,
+      shedules: grouped[key],
+    }));
   }
 
   async edit_course() {
@@ -156,10 +188,12 @@ export class EditStudentComponent implements OnInit {
   }
 
   capturar_level_curso() {
+    document.getElementById('Text_Institution').innerHTML =
+      this.dataEnrollment?.Course?.Institution?.name;
     document.getElementById('Text_level').innerHTML =
-      this.data_student.Course.Schedule.Level.name;
+      this.dataEnrollment?.Course?.Level?.name;
     document.getElementById('Text_curso').innerHTML =
-      this.data_student.Course.name;
+      this.dataEnrollment?.Course?.name;
   }
 
   editar() {
@@ -178,30 +212,30 @@ export class EditStudentComponent implements OnInit {
     });
   }
 
-  delete() {
-    Swal.fire({
-      title: 'Eliminar Registro',
-      text: '¿Está seguro que desea eliminar a este estudiante? ',
-      icon: 'warning',
-      showCancelButton: true,
-      cancelButtonText: 'Cancelar',
-      confirmButtonColor: '#28a745',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Si, eliminar',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        await this._apiService.delete_student(this.student.id);
-        await Swal.fire({
-          title: 'Eliminado',
-          text: 'Se ha eliminado un registro de estudiante',
-          icon: 'success',
-          timer: 3000,
-          showConfirmButton: false,
-        });
-        window.location.reload();
-      }
-    });
-  }
+  // delete() {
+  //   Swal.fire({
+  //     title: 'Eliminar Registro',
+  //     text: '¿Está seguro que desea eliminar a este estudiante? ',
+  //     icon: 'warning',
+  //     showCancelButton: true,
+  //     cancelButtonText: 'Cancelar',
+  //     confirmButtonColor: '#28a745',
+  //     cancelButtonColor: '#d33',
+  //     confirmButtonText: 'Si, eliminar',
+  //   }).then(async (result) => {
+  //     if (result.isConfirmed) {
+  //       await this._apiService.delete_student(this.student.id);
+  //       await Swal.fire({
+  //         title: 'Eliminado',
+  //         text: 'Se ha eliminado un registro de estudiante',
+  //         icon: 'success',
+  //         timer: 3000,
+  //         showConfirmButton: false,
+  //       });
+  //       // window.location.reload();
+  //     }
+  //   });
+  // }
 
   async edit_student(values: any) {
     this.datos_of_students = values;
@@ -251,5 +285,76 @@ export class EditStudentComponent implements OnInit {
     //   }
     //   )
     // }
+  }
+
+  updateEnrollmentStatus(enrollment: any): void {
+    if (!enrollment.newStatus || enrollment.newStatus === enrollment.status)
+      return;
+
+    const payload = { status: enrollment.newStatus };
+
+    this._apiService
+      .updateStudentEnrollmentStatus(enrollment.id, payload)
+      .subscribe({
+        next: () => {
+          enrollment.status = enrollment.newStatus;
+          enrollment.newStatus = null;
+          this.toastr.success(
+            `Se ha actualizado al alumno ${
+              this.data_student.name + ' ' + this.data_student.lastName
+            }, su estatus de matrícula`
+          );
+        },
+        error: (err) => {
+          console.error('Error al actualizar el estado', err);
+          this.toastr.error(
+            `Hubo un error al cambiar el status del alumno ${
+              this.data_student.name + ' ' + this.data_student.lastName
+            }`
+          );
+        },
+      });
+  }
+
+  async change_course() {
+    const selectedCourseId = this.verSeleccion_curso;
+    const studentId = this.data_student.id;
+
+    if (!selectedCourseId || selectedCourseId === 0) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Curso no seleccionado',
+        text: 'Por favor, selecciona un curso antes de continuar.',
+        confirmButtonColor: '#1D71B8',
+      });
+      return;
+    }
+    try {
+      const response = await this._apiService.updateStudentCourse(studentId, {
+        courseId: selectedCourseId,
+      });
+
+      if (!response) {
+        throw new Error('Respuesta no válida del servidor.');
+      }
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'Curso actualizado con éxito',
+        text: 'El cambio de curso se realizó con éxito.',
+        confirmButtonColor: '#1D71B8',
+      });
+
+      window.location.reload();
+    } catch (error) {
+      console.error('Error al actualizar el curso:', error);
+
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error?.message || 'Ocurrió un error inesperado.',
+        confirmButtonColor: '#1D71B8',
+      });
+    }
   }
 }

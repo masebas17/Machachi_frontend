@@ -13,37 +13,37 @@
       <div class="col-sm-3" *ngFor="let courses of mycourses">
         <div class="card" style="width: 20rem">
           <img
-            *ngIf="courses.Schedule.Level.name == 'Iniciación'"
+            *ngIf="getLevelName(courses.levelId) == 'Iniciación'"
             src="../assets/images/my-courses-teachers/iniciacion.png"
             class="card-img-top"
             alt="..."
           />
           <img
-            *ngIf="courses.Schedule.Level.name == 'Reconciliación'"
+            *ngIf="getLevelName(courses.levelId) == 'Reconciliación'"
             src="../assets/images/my-courses-teachers/reconciliacion.png"
             class="card-img-top"
             alt="..."
           />
           <img
-            *ngIf="courses.Schedule.Level.name == 'Eucaristía'"
+            *ngIf="getLevelName(courses.levelId) == 'Eucaristía'"
             src="../assets/images/my-courses-teachers/eucaristia.png"
             class="card-img-top"
             alt="..."
           />
           <img
-            *ngIf="courses.Schedule.Level.name == 'Año Bíblico'"
+            *ngIf="getLevelName(courses.levelId) == 'Año Bíblico'"
             src="../assets/images/my-courses-teachers/año_biblico.png"
             class="card-img-top"
             alt="..."
           />
           <img
-            *ngIf="courses.Schedule.Level.name == 'R.P.B.'"
+            *ngIf="getLevelName(courses.levelId) == 'R.P.B.'"
             src="../assets/images/my-courses-teachers/rpb.png"
             class="card-img-top"
             alt="..."
           />
           <img
-            *ngIf="courses.Schedule.Level.name == 'Confirmación'"
+            *ngIf="getLevelName(courses.levelId) == 'Confirmación'"
             src="../assets/images/my-courses-teachers/confirmacion.png"
             class="card-img-top"
             alt="..."
@@ -52,7 +52,7 @@
           <div class="card-body">
             <h5 class="card-title">
               {{
-                courses.Schedule.Level.name +
+                getLevelName(courses.levelId) +
                   " " +
                   "-" +
                   " " +

@@ -34,8 +34,8 @@
             [(ngModel)]="model"
             ngbDatepicker
             [markDisabled]="isWeekend"
-            [minDate]="{ year: 2024, month: 10, day: 18 }"
-            [maxDate]="{ year: 2025, month: 05, day: 25 }"
+            [minDate]="minAttendanceDate"
+            [maxDate]="maxAttendanceDate"
             [readonly]="true"
             #d="ngbDatepicker"
           />
@@ -179,7 +179,11 @@
   <div class="row" *ngIf="students != null">
     <div class="col-sm-6">
       <div class="botones">
-        <button class="btn btn-success" (click)="guardarAsistencia()">
+        <button
+          class="btn btn-success"
+          (click)="guardarAsistencia()"
+          [disabled]="!canSaveAttendance()"
+        >
           <fa-icon [icon]="faSave"></fa-icon> Grabar Asistencia
         </button>
         <button class="btn btn-danger" (click)="eliminar()">
@@ -224,8 +228,8 @@
                   [(ngModel)]="model1"
                   ngbDatepicker
                   [markDisabled]="isWeekend"
-                  [minDate]="{ year: 2023, month: 10, day: 21 }"
-                  [maxDate]="{ year: 2024, month: 05, day: 26 }"
+                  [minDate]="minEditDate"
+                  [maxDate]="maxEditDate"
                   [readonly]="true"
                   #dos="ngbDatepicker"
                   (dateSelect)="verificarFechaSeleccionada($event)"
@@ -256,7 +260,7 @@
                 Cargar datos
               </button>
               <button
-                type="button"
+                *ngIf="BtnCargarDatos"
                 class="btn btn-danger"
                 data-bs-dismiss="modal"
               >

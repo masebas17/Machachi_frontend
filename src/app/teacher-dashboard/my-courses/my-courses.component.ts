@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ApiService } from 'src/app/services/api.service';
 import { NamespaceBody } from 'typescript';
 import { faListCheck } from '@fortawesome/free-solid-svg-icons';
+import { datalevel } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-my-courses',
@@ -13,12 +14,29 @@ export class MyCoursesComponent implements OnInit {
   mycourses: any;
   name_teacher: any;
   principal_teacher: any;
+  levels: datalevel[] = [];
   faListCheck = faListCheck;
 
-  constructor(private ApiService: ApiService, private router: Router) {}
+  constructor(
+    private ApiService: ApiService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
+    this.loadLevels();
     this.misCursos();
+  }
+
+  async loadLevels() {
+    this.ApiService.getlevel().subscribe((response: any) => {
+      this.levels = response.data || response || [];
+    });
+  }
+
+  getLevelName(levelId: number): string {
+    if (!Array.isArray(this.levels)) return '';
+    const level = this.levels.find((l) => l.id === levelId);
+    return level ? level.name : '';
   }
 
   async misCursos() {
@@ -26,6 +44,7 @@ export class MyCoursesComponent implements OnInit {
     console.log(resp);
 
     this.mycourses = resp.data.Teacher.Courses;
+    console.log('CURSOS ENCONTRADOS:', this.mycourses);
     this.name_teacher = resp.data.Teacher;
     this.principal_teacher = resp.data.Teacher.Courses.principalId;
   }

@@ -12,7 +12,10 @@ export class AuthService {
   apiUrl = 'https://servicios.iglesiademachachi.com';
   //apiUrl = 'http://localhost:3000';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {}
 
   //? Servicio que maneja el inicio de sesion
   async login(username: string, password: string) {
