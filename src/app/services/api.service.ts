@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {
   HttpClient,
   HttpErrorResponse,
-  HttpHeaders,
 } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { Observable } from 'rxjs/internal/Observable';
@@ -28,17 +27,11 @@ import {
   providedIn: 'root',
 })
 export class ApiService {
-  token: any = null;
-
   constructor(private http: HttpClient) {}
 
   userUrl = 'https://sistema-matriculacion-backend.onrender.com';
   apiUrl = 'https://servicios.iglesiademachachi.com';
   //apiUrl = 'http://localhost:3000';
-
-  getToken() {
-    this.token = localStorage.getItem('jwt') || null;
-  }
 
   getlevel(): Observable<datalevel[]> {
     return this.http.get<datalevel[]>(`${this.apiUrl}/api/levels`);
@@ -92,58 +85,37 @@ export class ApiService {
   }
 
   async getCoursesbyid(id: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const response: any = await this.http
-      .get(`${this.apiUrl}/api/courses/schedule/` + id, options)
+      .get(`${this.apiUrl}/api/courses/schedule/` + id)
       .toPromise();
-    //Guarda el token en el local storage al iniciar sesion correctamente
     return response;
   }
 
   async getschedules_from_admin() {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
-    //FIX esta api es con el año especifico no all
     const response: any = await this.http
-      .get(`${this.apiUrl}/api/schedules/2024`, options)
+      .get(`${this.apiUrl}/api/schedules/2024`)
       .toPromise();
-    //Guarda el token en el local storage al iniciar sesion correctamente
     return response;
   }
 
   async getschedules_all() {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const response: any = await this.http
-      .get(`${this.apiUrl}/api/schedules/all`, options)
+      .get(`${this.apiUrl}/api/schedules/all`)
       .toPromise();
-    //Guarda el token en el local storage al iniciar sesion correctamente
     return response;
   }
 
   async getschedules_from_year(year: string) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const response: any = await this.http
-      .get(`${this.apiUrl}/api/schedules/${year}`, options)
+      .get(`${this.apiUrl}/api/schedules/${year}`)
       .toPromise();
-    //Guarda el token en el local storage al iniciar sesion correctamente
     return response;
   }
 
   async getcourses_from_admin(id: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const response: any = await this.http
-      .get(`${this.apiUrl}/api/courses/schedule/` + id + '/count', options)
+      .get(`${this.apiUrl}/api/courses/schedule/` + id + '/count')
       .toPromise();
-    //Guarda el token en el local storage al iniciar sesion correctamente
     return response;
   }
 
@@ -155,19 +127,13 @@ export class ApiService {
   }
 
   async enrollemnt_Teacher_admin(teacher: dataTeacher) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .post(`${this.apiUrl}/api/teachers`, teacher, options)
+      .post(`${this.apiUrl}/api/teachers`, teacher)
       .toPromise();
     return resp;
   }
 
   async enrollemnt_Teacher(teacher: dataTeacher) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
       .post(`${this.apiUrl}/api/teachers`, teacher)
       .toPromise();
@@ -175,30 +141,21 @@ export class ApiService {
   }
 
   async get_Teacher_admin(id: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .get(`${this.apiUrl}/api/teachers/filtered/${id}`, options)
+      .get(`${this.apiUrl}/api/teachers/filtered/${id}`)
       .toPromise();
     return resp;
   }
   async delete_student(id: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .delete(`${this.apiUrl}/api/students/${id}`, options)
+      .delete(`${this.apiUrl}/api/students/${id}`)
       .toPromise();
     return resp;
   }
 
   async edit_student(id: any, Student: dataStudent | any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .put(`${this.apiUrl}/api/students/${id}`, Student, options)
+      .put(`${this.apiUrl}/api/students/${id}`, Student)
       .toPromise();
     return resp;
   }
@@ -211,61 +168,43 @@ export class ApiService {
   }
 
   async edit_course_teacher(id: any, course: editCourses_teacher | any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .put(`${this.apiUrl}/api/courses/${id}`, course, options)
+      .put(`${this.apiUrl}/api/courses/${id}`, course)
       .toPromise();
     return resp;
   }
 
   async edit_course_quota(id: any, course: ediCourses_quota | any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .put(`${this.apiUrl}/api/courses/${id}`, course, options)
+      .put(`${this.apiUrl}/api/courses/${id}`, course)
       .toPromise();
     return resp;
   }
 
   async get_Teacher_info() {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .get(`${this.apiUrl}/api/teachers/info`, options)
+      .get(`${this.apiUrl}/api/teachers/info`)
       .toPromise();
     return resp;
   }
 
   async get_Teachers() {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .get(`${this.apiUrl}/api/teachers`, options)
+      .get(`${this.apiUrl}/api/teachers`)
       .toPromise();
     return resp;
   }
 
   async edit_Teachers(id: any, teacher: dataTeacher | any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .put(`${this.apiUrl}/api/teachers/${id}`, teacher, options)
+      .put(`${this.apiUrl}/api/teachers/${id}`, teacher)
       .toPromise();
     return resp;
   }
 
   async delete_teacher(id: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .delete(`${this.apiUrl}/api/teachers/${id}`, options)
+      .delete(`${this.apiUrl}/api/teachers/${id}`)
       .toPromise();
     return resp;
   }
@@ -292,21 +231,15 @@ export class ApiService {
   }
 
   async Assistance(Assistance: assistance) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .post(`${this.apiUrl}/api/assistance`, Assistance, options)
+      .post(`${this.apiUrl}/api/assistance`, Assistance)
       .toPromise();
     return resp;
   }
 
   async get_Assistance(id: any, date: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .get(`${this.apiUrl}/api/assistance/courseId/${id}/date/${date}`, options)
+      .get(`${this.apiUrl}/api/assistance/courseId/${id}/date/${date}`)
       .toPromise();
     return resp;
   }
@@ -316,48 +249,34 @@ export class ApiService {
     date: any,
     update_assistance: update_assistance,
   ) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
       .put(
         `${this.apiUrl}/api/assistance/courseId/${id}/date/${date}`,
         update_assistance,
-        options,
       )
       .toPromise();
     return resp;
   }
 
   async delete_assistance(id: any, date: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
       .delete(
         `${this.apiUrl}/api/assistance/courseId/${id}/date/${date}`,
-        options,
       )
       .toPromise();
     return resp;
   }
 
   async get_report_Assistance(id: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .get(`${this.apiUrl}/api/reports/assistance/courseId/${id}`, options)
+      .get(`${this.apiUrl}/api/reports/assistance/courseId/${id}`)
       .toPromise();
     return resp;
   }
 
   async getEnrollmentsByCourse(courseId: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
     const resp: any = await this.http
-      .get(`${this.apiUrl}/api/enrollments/course/${courseId}`, options)
+      .get(`${this.apiUrl}/api/enrollments/course/${courseId}`)
       .toPromise();
     return resp;
   }
@@ -366,14 +285,9 @@ export class ApiService {
     courseId: number,
     payload: EnrollmentApprovalPayload,
   ): Observable<any> {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
-
     return this.http.patch(
       `${this.apiUrl}/api/enrollments/course/${courseId}`,
       payload,
-      options,
     );
   }
 
@@ -386,24 +300,15 @@ export class ApiService {
   }
 
   updateStudentEnrollmentStatus(id: number, payload: { status: string }) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
-
     return this.http.patch(
       `${this.apiUrl}/api/enrollments/${id}`,
       payload,
-      options,
     );
   }
 
   updateStudentCourse(studentId: number, data: { courseId: number }) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
-
     return this.http
-      .patch(`${this.apiUrl}/api/students/${studentId}/course`, data, options)
+      .patch(`${this.apiUrl}/api/students/${studentId}/course`, data)
       .toPromise();
   }
 
@@ -447,26 +352,17 @@ export class ApiService {
   }
 
   async enrollmentAdmin(Student: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
-
     const resp: any = await this.http
-      .post(`${this.apiUrl}/api/students/admin-enroll`, Student, options)
+      .post(`${this.apiUrl}/api/students/admin-enroll`, Student)
       .toPromise();
     return resp;
   }
 
   async updateAndenrollmentAdmin(studentId: number, Student: any) {
-    const options = {
-      headers: new HttpHeaders({ ['x-token']: localStorage.getItem('jwt') }),
-    };
-
     const resp: any = await this.http
       .put(
         `${this.apiUrl}/api/students/${studentId}/update-enrollment-admin`,
         Student,
-        options,
       )
       .toPromise();
     return resp;

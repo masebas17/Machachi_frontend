@@ -22,6 +22,9 @@ export class EnrollmentReportComponent implements OnInit {
   backgroundImageBase64: string = '';
   coordinatorSignatureBase64: string = '';
   fontsReady = false;
+  fechaTemp: string = '';
+  fechasPorCurso: { [key: number]: string } = {};
+  Object = Object;
 
   constructor(
     private apiService: ApiService,
@@ -107,6 +110,37 @@ export class EnrollmentReportComponent implements OnInit {
       });
   }
 
+  guardarFechaCurso(): void {
+    if (!this.opcionCurso || !this.fechaTemp) {
+      this.toastr.warning('Seleccione un curso y una fecha');
+      return;
+    }
+
+    const [year, month, day] = this.fechaTemp.split('-').map(Number);
+    const fecha = new Date(year, month - 1, day);
+    const opciones: Intl.DateTimeFormatOptions = {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    };
+    const fechaFormato = new Intl.DateTimeFormat('es-ES', opciones).format(fecha);
+
+    this.fechasPorCurso[this.opcionCurso] = fechaFormato.charAt(0).toUpperCase() + fechaFormato.slice(1);
+    this.toastr.success(`Fecha guardada para el curso ${this.opcionCurso}`);
+    this.fechaTemp = '';
+  }
+
+  obtenerFechaActual(): string {
+    return this.fechasPorCurso[this.opcionCurso] || '';
+  }
+
+  obtenerFechasConfiguradasList(): any[] {
+    return Object.entries(this.fechasPorCurso).map(([cursoId, fecha]) => ({
+      cursoId: parseInt(cursoId),
+      fecha: fecha
+    }));
+  }
+
   generateCertificates() {
     const pdf = new PdfMakeWrapper();
     pdf.pageSize('A4');
@@ -119,15 +153,6 @@ export class EnrollmentReportComponent implements OnInit {
       Eucaristía: 'Eucaristía',
       'Año Bíblico': 'Año Bíblico',
       Confirmación: 'Confirmación',
-    };
-
-    const fechasPorNivel = {
-      Iniciación: '21 de junio del 2025',
-      Reconciliación: '22 de junio del 2025',
-      Eucaristía: '28 de junio del 2025',
-      'Año Bíblico': '29 de junio del 2025',
-      'R.P.B.': '06 de julio del 2025',
-      Confirmación: '05 de julio del 2025',
     };
 
     const aprobados = this.enrollments.filter((e) => e.status === 'Aprobado');
@@ -143,7 +168,7 @@ export class EnrollmentReportComponent implements OnInit {
         const nivelDiploma = nombreNivelDiploma[nivelBase] || nivelBase;
         const periodoBase = enrollment.Course.Schedule.period;
         const periodo = `${periodoBase} - ${parseInt(periodoBase) + 1}`;
-        const fechaDiploma = fechasPorNivel[nivelBase] || 'Fecha pendiente';
+        const fechaDiploma = this.fechasPorCurso[enrollment.Course.id] || 'Fecha pendiente';
 
         // pdf.add({
         //   absolutePosition: { x: 30, y: 25 + j * 421 },

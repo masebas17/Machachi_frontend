@@ -21,6 +21,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { VoucherComponentComponent } from './voucher-component/voucher-component.component';
 import { HttpRequestInterceptor } from './interceptors/http-loading.interceptor';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EditStudentComponent } from './admin/edit-student/edit-student.component';
 import { EditCourseComponent } from './admin/edit-course/edit-course.component';
@@ -138,6 +139,11 @@ registerLocaleData(localeEc, 'es-EC');
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpRequestInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
       multi: true,
     },
     { provide: LOCALE_ID, useValue: 'es-EC' },
